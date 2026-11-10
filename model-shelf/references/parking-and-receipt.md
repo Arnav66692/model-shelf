@@ -7,8 +7,8 @@ Reply layout, plan rules, the receipt and the shelf file. Read this before Step 
 ```text
 Shelf (N weights files in the folders you named)
 
-| File | Model name | How named | Quant | Size | License line as written | Twin |
-| FULL PATH | NAME or not identified (folder hint: FOLDER) | header, model card, or not identified | QUANT or not shown | BYTES | "LINE" from SOURCE, or no license line found | FULL PATH of twin, or none |
+| File | Model name | What it does | How named | Quant | Size | License line as written | Twin |
+| FULL PATH | NAME or not identified (folder hint: FOLDER) | PLAIN PHRASE or not stated | header, model card, or not identified | QUANT or not shown | BYTES | "LINE" from SOURCE, or no license line found | FULL PATH of twin, or none |
 
 Parked models (in the archive folder)
 - FULL PATH. NAME, named by header or model card. BYTES. License line: "LINE" from SOURCE.

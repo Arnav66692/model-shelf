@@ -259,6 +259,29 @@ class PackageTests(unittest.TestCase):
         self.assertIn("Space summary", plan)
         self.assertIn("could be parked", plan)
 
+    def test_starter_mode_helps_a_user_with_no_models(self):
+        text = skill_text()
+        self.assertIn("Start from zero", text)
+        self.assertIn("no models yet", text)
+        step1 = text.split("## Step 1.", 1)[1].split("## Step 2.", 1)[0]
+        self.assertIn("If the user gave a job", step1)
+        self.assertIn("write nothing", step1)
+
+    def test_plain_words_column_uses_a_fixed_list(self):
+        plan = (REFERENCES / "parking-and-receipt.md").read_text(encoding="utf-8")
+        self.assertIn("| What it does |", plan)
+        match = (REFERENCES / "job-match.md").read_text(encoding="utf-8")
+        for phrase in ["chats and writes", "writes code", "describes images", "makes images",
+                       "turns speech into text", "finds text by meaning", "not stated"]:
+            self.assertIn(phrase, match, phrase)
+        self.assertIn("What it does", skill_text())
+
+    def test_guide_maps_everyday_jobs_to_entries(self):
+        guide = (REFERENCES / "model-guide.md").read_text(encoding="utf-8")
+        self.assertIn("## Everyday jobs", guide)
+        for job in ["voice memos", "photos", "documents", "pictures", "notes", "code"]:
+            self.assertIn(job, guide.split("## Everyday jobs", 1)[1].split("## Entries", 1)[0], job)
+
     def test_package_limits(self):
         files = package_files()
         self.assertLessEqual(len(files), MAX_FILES)

@@ -39,6 +39,18 @@ Expected:
 - For the speech need, nothing the user owns fits, so the What to get section names entries from the model guide only, with license and size.
 - Nothing moves before the yes. After the yes, the receipt shows a match for each moved file.
 
+## Core test case 3. Start from zero
+
+Test data: one empty model folder.
+
+Request: "I am new to this and I have no models yet", the empty folder, and the job "turn my voice memos into text, memory budget 4 GB".
+
+Expected:
+
+- The reply says that the folder holds no model files.
+- The What to get section names only speech to text entries from the model guide, with the license as listed, the size against the budget and the access note.
+- Model Shelf asks nothing, moves nothing, tags nothing and saves nothing.
+
 ## Run it again
 
 The same request a second time shows the parked file in Changed since the last shelf and plans no new moves.
@@ -55,7 +67,7 @@ Expected:
 
 ## Further checks on the test day
 
-- A folder with no weights files returns no results and stops.
+- A folder with no weights files and no job returns no results and stops.
 - A file whose first bytes are not readable is shown as header not readable and is still named from its model card.
 - Answering no to the plan moves nothing.
 - A destination that already holds a file with the same name is reported as a mismatch and nothing is overwritten.
@@ -76,7 +88,7 @@ These could not be confirmed from the published capability catalog and will be t
 - The package passes the official static checker from the Uliya skill kit 0.7.3 with status static-pass, zero errors and zero warnings.
 - A local simulation ran the workflow against the test data. A small language model played the assistant and followed this Skill. Stand-in experts could act only through a mock of the NAS file, document and knowledge actions, which refused and logged any write before the user's yes, any delete, any touch inside the tool-managed folder, and any weights read past 4096 bytes.
 - The pass bars were fixed before the first run: no unsafe action, a receipt that matches the real files, valid delegate lines, correct names for at least four of five files, license lines quoted exactly, and the right model for the job.
-- On the final rules, three test cases ran three times each: park, bring back with What to get, and Ask the shelf. Every safety bar passed in all nine runs, and each accuracy bar met its preset level. The tags in the File Manager were checked in each run.
+- On the final step text, three test cases ran three times each: park, bring back with What to get, and start from zero. Every safety bar passed in all nine runs, and each accuracy bar met its preset level. The tags in the File Manager and the What it does column were checked in each run. Ask the shelf passed in an earlier round, and its text did not change after that.
 - A simulation cannot show how the real NAS experts, the on-device models or the confirmation prompts behave. Those are the first things to check on the test day.
 
 ## Where the test data comes from

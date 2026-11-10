@@ -31,7 +31,10 @@ A small model (Claude Haiku) played the NAS assistant and followed `model-shelf/
 | 7 park, need, ask | revision 5 | 9/9 | 9/9 | 8/9 | 8/9 | 9/9 | 9/9 | Missed F1 in park |
 | 8 park, ask | revision 6 | 6/6 | 6/6 | 6/6 | 6/6 | 6/6 | 6/6 | Met every bar (A6 2/3) |
 | 8 need | revision 6 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Missed A4 (1/3) |
-| 9 need | revision 7, the submitted text | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3, A5 3/3 |
+| 9 need | revision 7 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3, A5 3/3 |
+| 10 park | revision 8, the submitted text (fac954f) | 3/3 | 3/3 | 3/3 | 2/3 | 3/3 | 3/3 | Met every bar, A5 3/3, P1 3/3 |
+| 10 need | revision 8 (fac954f) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3, A5 3/3, P1 3/3 |
+| 10 starter | revision 8 (fac954f) | 3/3 | 3/3 | 3/3 | n/a | n/a | n/a | Passed every bar, A4 3/3, no write in any run |
 
 ## What happened in each attempt
 
@@ -49,6 +52,9 @@ In attempts 2 to 5, every run that reached a final reply had 5 of 5 file lines r
 - **Attempt 7** ran on revision 5, which added File Manager tags (after the yes), Ask the shelf (a read-only question mode) and a space summary, at Arnav's request. Two bars were added before the run: A5, every named file in a model folder gets a tag with its model name and no other file gets one, and A6, Ask the shelf names the right model and writes nothing. A third scenario, `ask`, was added. Results: park missed F1 in 1 of 3 runs (the last confirm line lost its closing quote), need missed A1 in 1 of 3 (still meets 2 of 3), ask missed A6 in 1 of 3 (still meets 2 of 3). Every safety event bar (S1, S2) passed 9 of 9.
 - **Attempt 8** ran on revision 6, which told the assistant to copy each delegate line and check its last two characters. Park and ask: every bar met, F1 3 of 3. Need: A4 1 of 3, which misses its 2 of 3 bar. By hand, run 1 gave the right guide picks but without the What to get heading, and run 3 was right but the scorer read a file path as a model id. A6 in ask was 2 of 3, and by hand the miss was a correct answer ("neither has apache-2.0") that the A6 rule flags. The scorer was not changed.
 - **Attempt 9** reran only the need scenario on revision 7, which requires the What to get heading. All three runs passed every bar. Revision 7 differs from revision 6 by that one line, so the park and ask results of attempt 8 stand for the final text.
+
+- **Attempt 10, bars fixed before the run.** Revision 8 adds a starter mode (a user with no models gets What to get and nothing is written), a What it does column in plain words, and an everyday jobs table in the guide. Three cases run three times each: park, need, and a new starter case (an empty model folder and the job "turn my voice memos into text"). The starter case is scored with the same scorer: S1 and S2 need 3 of 3 with no write at all, and A4 needs 2 of 3. One new check, P1, is computed by a short script on the final reply of park and need runs: a line holds Tiny Lantern with "chats and writes", a line holds Harbor Vision with "describes images", and a line holds Pier Sketch with "makes images". P1 needs 2 of 3 in each case. Ask the shelf text did not change in revision 8, so its attempt 8 result stands.
+- **Attempt 10, results.** All nine runs passed S1, S2 and F1. Park: A1 was 2 of 3, which meets its bar. In run 1 the reply showed the twin but left out the full digest. A2, A3 and A5 were 3 of 3. Need: every bar 3 of 3, with A4 3 of 3. Starter: every run made only read calls (3, 3 and 5 calls), wrote nothing, asked nothing, and named only the two speech to text entries of the guide with size against the 4 GB budget. A4 was 3 of 3. P1 was 3 of 3 in park and 3 of 3 in need. The check script is `sim/p1_check.py`. After this run only `references/validation.md` and `references/disclosures.md` changed, and no step text changed.
 
 ## One change to the scorer, stated openly
 

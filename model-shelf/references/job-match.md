@@ -31,6 +31,22 @@ A job in plain words, for example a small chat model for client work, or a model
 - Say plainly that Model Shelf does not download models. The user downloads from the model page, puts the file in a model folder, and runs Model Shelf again.
 - If no guide entry covers the need, say the guide has no entry for it, then say what to look for: the task, a file size under the budget, and a license line to read first.
 
+## Plain words
+
+Many owners do not know the technical words. The shelf table has a column named What it does. It holds one phrase from this fixed list, chosen only from the quoted use line of the model card:
+
+- chats and writes
+- writes code
+- describes images
+- makes images
+- turns speech into text
+- finds text by meaning
+- not stated
+
+Use not stated when the card has no use line or the file is not identified. Never guess from the file name.
+
+The user can also type the job in plain words, such as turn my voice memos into text or make pictures for my shop. Match the job to the same list.
+
 ## License lines
 
 People who do client work need to see the license line before they pick a model. Model Shelf shows it and stops there.

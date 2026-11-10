@@ -1,6 +1,6 @@
 # Model Shelf
 
-Model Shelf is a Skill for the UGREEN AI NAS. You type a job, for example "a small coding model and a speech to text model". Model Shelf names every AI model file on the NAS, finds the models that fit the job, brings back parked models, and tells you what to get. It never deletes a file.
+Model Shelf is a Skill for the UGREEN AI NAS. You type a job in plain words, for example "turn my voice memos into text". If you have no models, Model Shelf tells you which model to get. If you have models, it names every AI model file on the NAS, says in plain words what each model does, finds the models that fit the job and brings back parked models. It never deletes a file.
 
 This is an entry for the UGREEN Hackathon 2026 on AI NAS.
 
@@ -57,7 +57,7 @@ The tests skip the checker step when the kit is not there.
 
 ## Results
 
-In the last round, two test cases ran three times each. All six runs passed every safety and accuracy bar. The bars were set before the first run. `sim/RESULTS.md` shows every round, including the rounds that missed a bar.
+In the last round, three test cases ran three times each: park a twin, bring back with what to get, and start from zero. All nine runs passed every safety bar, and each accuracy bar met its preset level. The bars were set before the first run. `sim/RESULTS.md` shows every round, including the rounds that missed a bar.
 
 ## What this test bench cannot show
 

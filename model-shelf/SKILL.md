@@ -5,12 +5,13 @@ description: Names every AI model file on this NAS from its own header or model 
 
 # Goal
 
-People who run AI models at home keep files of 7 to 43 GB on the NAS under names like model.safetensors, often in two or three copies across Ollama, ComfyUI and LM Studio folders. Model Shelf does three things for them. It works with the NAS local model and calls no outside service.
+An AI NAS is made to run AI models at home. Each model is a file of 1 to 43 GB, often with a name like model.safetensors, and often stored two or three times by Ollama, ComfyUI or LM Studio. Model Shelf is for every owner who has model files on the NAS, and for every owner who wants a first model and does not know which one to get. It needs no technical words from the user. It works with the NAS local model and calls no outside service.
 
 1. Name what is there. A shelf table names every weights file, even one called model.safetensors or final_v2.gguf, with its size, its license line as written, and any exact twin.
 2. Match it to the job. The user types the job they want to do. Model Shelf says which models they already own fit it, with the model card lines that say so. If a parked model fits, it plans to bring it back. If nothing they own fits, it says what to get, using only a short guide of models that was checked by hand.
 3. Set up the shelf. Spare copies are parked in an archive folder the user chooses, parked models the job needs are brought back, and each named file gets a tag with its model name in the NAS File Manager, only after the user approves the exact list. A receipt then compares what was expected with what is really there.
 4. Ask the shelf. Later, the user can ask a short question, such as which models have a given license. The answer comes from the newest saved shelf file, with quoted lines, and writes nothing.
+5. Start from zero. A user who has no models yet types an everyday job, such as turn my voice memos into text. Model Shelf says what to get from the checked guide, in plain words, and writes nothing.
 
 Model Shelf never deletes a file. It never changes, trains, converts or runs a model. Model Shelf never downloads or installs a model. When a model is missing, it tells the user what to get and the user downloads it. It never moves a file inside a tool-managed store, which is a folder where a model tool keeps a blobs folder beside a manifests or snapshots folder.
 
@@ -52,7 +53,7 @@ Read only. Send this to the file expert.
 
 delegate --target file-agent --instruction 'Read only. Change nothing. Work through each of these folders: MODEL_FOLDERS. Say whether each folder exists. A folder at any depth is tool-managed when it holds a folder named blobs beside a folder named manifests or a folder named snapshots, or when its own name begins with the word models followed by two hyphens. A named folder whose own path passes through a folder named blobs, manifests or snapshots, or through a folder whose name begins with the word models followed by two hyphens, is tool-managed too. Every file under a tool-managed folder is tool-managed. Name each tool-managed folder you find, and for each one give the number of files in its blobs folder, their total size, and the names and sizes of the ten largest, reading no file content. Outside tool-managed folders, list every file whose name ends in .gguf, .safetensors, .ckpt, .pt, .pth, .bin or .onnx, in all subfolders, with its full path, its size in bytes and its modified time. Stop after 50 loose files and say that the list was cut. If there are no results, say so plainly.'
 
-- No results means no weights files were found. Tell the user which folders were searched, that nothing matched, and stop. Do not search other folders.
+- No results means no weights files were found, so the user has no models yet in these folders. Do not search other folders. If the user gave a job, go to Step 5 and give only the job answer and the What to get section for each need. Ask nothing and write nothing. If the user gave no job, tell the user which folders were searched and that nothing matched, offer to say what to get for a job, and stop.
 - If the list was cut because it holds more than 50 loose files, return waiting_user and ask the user to name a smaller folder. Files in a tool-managed folder do not count toward the 50.
 - A file inside a tool-managed folder is listed in the shelf table as tool-managed. It is never read past its name, never hashed and never moved.
 - If every folder the user named is tool-managed, show the blob names and sizes, explain that the way to remove a model from such a store is that tool's own remove command, and stop. Nothing is read, hashed or planned.
@@ -96,7 +97,7 @@ delegate --target file-agent --instruction 'Read only. Change nothing. Compute t
 
 No delegation. Build the reply from the real results of Steps 1 to 4, in the layout given in [references/parking-and-receipt.md](references/parking-and-receipt.md).
 
-- Shelf table. One row per weights file with its full path, model name, how it was named (header, model card, or not identified), size, license line as written with its source, and its twin if it has one. Write no license line found when neither the header nor the card states one.
+- Shelf table. One row per weights file with its full path, model name, what it does in plain words, how it was named (header, model card, or not identified), size, license line as written with its source, and its twin if it has one. The What it does column holds one phrase from the fixed list in [references/job-match.md](references/job-match.md), chosen only from the quoted use line of the model card. Write no license line found when neither the header nor the card states one.
 - Space summary. Total bytes in loose files, in tool-managed folders and in the archive folder, and the bytes held by proven twins that could be parked. Use only sizes from Step 1.
 - Changed since the last shelf. Only when Step 1 returned an earlier shelf file. List files that are new, gone or moved since then.
 - Job answer. Only when the user gave a job. Follow [references/job-match.md](references/job-match.md). Use the needs, the matches and the quoted lines the document expert returned in Step 3. For each need there are three outcomes. A model on the shelf fits it. Or one of the parked models fits it, so plan to bring it back. Or nothing the user owns fits it.
@@ -165,7 +166,7 @@ delegate --target document-agent --instruction 'Read only. Answer a question usi
 - waiting_approval. A write is waiting for the user to confirm it on the NAS. Say which write it is and what it will change. Do not send another write until it is settled.
 - cancelled. The user or the NAS stopped a step. Report what had already moved, with receipt rows for those files only, and stop.
 - failed. Name the step that failed and the reason given. Keep and show the partial results. Do not run the steps that depend on it.
-- No results. If no weights files are found, say so and stop. If no model the user owns fits a need, say so for that need and give the What to get section. Never substitute a similar file, a similar model or a different folder.
+- No results. If no weights files are found and the user gave no job, say so and stop. If the user gave a job, give the What to get section and stop, with no writes. If no model the user owns fits a need, say so for that need and give the What to get section. Never substitute a similar file, a similar model or a different folder.
 - Partial results. If a header is not readable, a card is missing, or a file could not be hashed, say so in that row and carry on with the rest.
 
 # References

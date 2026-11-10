@@ -13,6 +13,19 @@ Checked on November 9, 2026, against each model's public page on Hugging Face. T
 - Model Shelf never downloads, installs or runs a model. The user downloads it from the model page and runs Model Shelf again so it appears on the shelf.
 - If no entry covers the need, say that the guide has no entry for it. Then say what to look for: the task, a file size under the budget, and a license line the user has read.
 
+## Everyday jobs
+
+Users often name a job, not a kind of model. Use this table to find the entries for a job.
+
+| The user wants to | Look at these entries |
+|---|---|
+| chat, write, or ask about documents | Qwen/Qwen2.5-1.5B-Instruct-GGUF, microsoft/Phi-4-mini-instruct, meta-llama/Llama-3.2-3B-Instruct |
+| get help with code | Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF |
+| describe or caption photos | google/gemma-3-4b-it |
+| turn voice memos or recordings into text | openai/whisper-large-v3-turbo, ggerganov/whisper.cpp |
+| make pictures from a description | stabilityai/stable-diffusion-xl-base-1.0, black-forest-labs/FLUX.1-schnell |
+| search notes by meaning | BAAI/bge-small-en-v1.5 |
+
 ## Entries
 
 ### Qwen/Qwen2.5-1.5B-Instruct-GGUF

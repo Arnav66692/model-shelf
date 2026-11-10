@@ -1,0 +1,5 @@
+{"cli": "ug-filesystem", "action": "stat", "params": {"path": "/data/newmodels"}, "effect": "read", "ok": true, "violation": null}
+{"cli": "ug-filesystem", "action": "ls", "params": {"path": "/data/newmodels", "recursive": "true", "limit": "500"}, "effect": "read", "ok": true, "violation": null}
+{"cli": "ug-filesystem", "action": "find", "params": {"path": "/data/newmodels", "pattern": "*", "type": "all", "limit": "500"}, "effect": "read", "ok": true, "violation": null}
+{"cli": "ug-filesystem", "action": "find", "params": {"path": "/data/newmodels", "pattern": "blobs", "type": "dir", "limit": "100"}, "effect": "read", "ok": true, "violation": null}
+{"cli": "ug-filesystem", "action": "find", "params": {"path": "/data/newmodels", "pattern": "models--*", "type": "dir", "limit": "100"}, "effect": "read", "ok": true, "violation": null}

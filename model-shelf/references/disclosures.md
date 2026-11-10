@@ -11,7 +11,7 @@
 
 ## Principal functionality developed for this hackathon
 
-The whole Skill was developed for this hackathon, starting on November 9, 2026. That covers the nine-step workflow in SKILL.md, the name ladder that identifies a weights file from its own header or model card, the duplicate proof by size and full digest, the job match with quoted model card lines, the approved parking plan that removes nothing, the read back receipt, and the dated shelf file. No earlier Skill or earlier submission material was reused.
+The whole Skill was developed for this hackathon, starting on November 9, 2026. That covers the ten-step workflow in SKILL.md, the start from zero mode, the What it does column in plain words, the name ladder that identifies a weights file from its own header or model card, the duplicate proof by size and full digest, the job match with quoted model card lines, the approved parking plan that removes nothing, the read back receipt, and the dated shelf file. No earlier Skill or earlier submission material was reused.
 
 ## AI tools used and their principal uses
 

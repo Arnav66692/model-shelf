@@ -6,7 +6,7 @@ Model Shelf
 
 ## Elevator pitch
 
-Type the job you want to do. Model Shelf names every AI model file on your NAS, finds the models that fit, brings back parked models and tells you what to get.
+Tell your NAS a job in plain words. Model Shelf finds the AI model for it on your disks. If you have none, it tells you which model to get.
 
 ## About the project
 
@@ -18,9 +18,24 @@ Then a cleanup command deleted my data without my approval. After that, I made a
 
 ## What it does
 
-You type the job, for example "a small coding model and a speech to text model". Model Shelf looks at the folders that you name and gives you one table, one job answer and one plan. You answer yes once. Then it does the plan and shows a receipt.
+An AI NAS is a home for AI models. Model Shelf is for every owner, with many models or with none.
+
+You type a job in plain words, for example "turn my voice memos into text". If you have no models, Model Shelf tells you which model to get. If you have models, it looks at the folders that you name and gives you one table, one job answer and one plan. You answer yes once. Then it does the plan and shows a receipt.
 
 ### All features
+
+**Start from zero**
+
+- You do not need a model to start. You name a folder and a job.
+- Model Shelf tells you which model to get for the job, with the license as listed, the size and the access note.
+- It compares each size with your memory budget.
+- In this mode it asks nothing, moves nothing and saves nothing.
+
+**Plain words**
+
+- You name a job, not a kind of model. For example, "describe my photos" or "search my notes by meaning".
+- The table has a "What it does" column. It uses short fixed phrases such as "chats and writes", "describes images" and "turns speech into text".
+- The phrase comes only from the use line of the model card. If the card does not state the use, the column shows "not stated".
 
 **Name each file**
 
@@ -118,7 +133,7 @@ A UGREEN Skill is a set of Markdown instructions. The Skill sends tasks to exper
 
 I used the official Uliya skill kit. Its checker shows no errors and no warnings for Model Shelf.
 
-I also built a test bench on my Mac. It has a small mock of the NAS file actions and a set of synthetic model files with real GGUF and safetensors headers. The mock stops and logs each unsafe action. A small AI model followed the Skill as the NAS assistant. A scorer checked each run against seven pass bars. I wrote these bars before the first run.
+I also built a test bench on my Mac. It has a small mock of the NAS file actions and a set of synthetic model files with real GGUF and safetensors headers. The mock stops and logs each unsafe action. A small AI model followed the Skill as the NAS assistant. A scorer checked each run against nine pass bars. I wrote these bars before the first run.
 
 ## Try it
 
@@ -132,14 +147,15 @@ The second problem was the small model. In my first tests, it lost the last quot
 
 My first test bench also had a fault. A helper agent did not want to record the scripted yes. Thus, the mock NAS refused each move. I fixed the bench, not the pass bars.
 
-In total I ran nine rounds of simulation. Some rounds missed a bar, and I fixed the Skill text each time. On the final rules, all nine runs passed every safety bar. The full record is in the repository, with the misses.
+In total I ran ten rounds of simulation. Some rounds missed a bar, and I fixed the Skill text each time. In the last round, three cases ran three times each. All nine runs passed every safety bar. The full record is in the repository, with the misses.
 
 ## Accomplishments that I am proud of
 
-- In the field of entries that I checked, no other Skill manages AI model files.
+- In the field of entries that I checked, no other Skill finds the AI model for a job or manages AI model files.
 - The Skill names a model from the bytes in the file, not from the file name.
 - The Skill never deletes a file, and it shows a receipt after each move.
-- On the final rules, every safety bar passed in all nine simulated runs.
+- A new owner with no models gets a useful answer. In that case the Skill writes nothing.
+- In the last round, every safety bar passed in all nine simulated runs.
 
 ## What I learned
 
