@@ -1,0 +1,1 @@
+Use Model Shelf. Ask my shelf: which of my models have the apache-2.0 license? My shelf folder is /data/shelf.

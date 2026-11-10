@@ -27,7 +27,9 @@ ug-filesystem cat --path P --offset N --length N   (returns the bytes as text, u
 ug-filesystem sha256sum --path P
 ug-filesystem mkdir --path P [--parents true]   (a write)
 ug-filesystem cpmv --src P --dst FOLDER_OR_FULL_PATH --type move|copy   (a write)
-ug-filemgr scan-dedupe --path P   (repeat --path for several folders)`,
+ug-filemgr scan-dedupe --path P   (repeat --path for several folders)
+ug-filemgr tag-add-file --path P --tag-id TAG_NAME   (a write. Repeat --path for several files that get the same tag. The tag is made if it does not exist.)
+ug-filemgr tag-get-file --path P`,
   'document-agent': `Your CLI is ug-document.
 ug-document qa --query Q --file P   (repeat --file for several files. It returns the text of md and txt files. You read that text and answer the instruction from it, quoting lines exactly.)`,
   'knowledge-agent': `Your CLI is ug-knowledge.

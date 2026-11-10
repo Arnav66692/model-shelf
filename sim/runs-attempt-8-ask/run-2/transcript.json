@@ -1,0 +1,32 @@
+[
+ {
+  "role": "user",
+  "kind": "message",
+  "text": "Use Model Shelf. Ask my shelf: which of my models have the apache-2.0 license? My shelf folder is /data/shelf."
+ },
+ {
+  "role": "parent",
+  "kind": "delegate",
+  "text": "delegate --target file-agent --instruction 'Read only. Change nothing. Look in this shelf folder for files whose names begin with model-shelf, and give the full path of the newest one: /data/shelf. If there are no results, say so plainly.'"
+ },
+ {
+  "role": "expert",
+  "kind": "result",
+  "text": "status completed: One file in /data/shelf matches model-shelf*, so it is the newest by default: /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md (type file, size 663 bytes). The search was not truncated. The tool output gives no modified-time field, so \"newest\" is confirmed only by being the sole match, not by comparing timestamps. No writes were made."
+ },
+ {
+  "role": "parent",
+  "kind": "delegate",
+  "text": "delegate --target document-agent --instruction 'Read only. Answer a question using only the shelf file at /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md. The question is: which of my models have the apache-2.0 license? Quote each line of the file that you use, word for word. If the file does not answer the question, say so plainly.'"
+ },
+ {
+  "role": "expert",
+  "kind": "result",
+  "text": "status completed: Answer: one model on the shelf has the apache-2.0 license: Tiny Lantern 1B Instruct, at /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf.\n\nThe shelf file is /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md. Tool output came back as one continuous text block, so the quoted passages below are the exact sentences from it:\n\n- \"File: /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf. Model: Tiny Lantern 1B Instruct. Named by: header. Size: 4268 bytes. License line: apache-2.0 (header). Twin: none.\"\n\nOther models on the shelf do not have apache-2.0 (quoted for reference):\n- \"File: /data/models/harbor-vision/harbor-vision-2b.gguf. Model: Harbor Vision 2B. Named by: header. Size: 4273 bytes. License line: harbor-noncommercial-1.0 (header). Twin: none.\"\n- \"File: /data/models/image/pier-sketch/model.safetensors. Model: Pier Sketch XL. Named by: model card. Size: 112 bytes. License line: license: openrail++ (/data/models/image/pier-sketch/README.md). Twin: none.\"\n\nNo read errors. Only the shelf file was used. The query ran once through ug-document qa."
+ },
+ {
+  "role": "parent",
+  "kind": "final",
+  "text": "One model on your shelf has the apache-2.0 license: Tiny Lantern 1B Instruct, at /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf.\n\nThe shelf line that shows it:\n\"File: /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf. Model: Tiny Lantern 1B Instruct. Named by: header. Size: 4268 bytes. License line: apache-2.0 (header). Twin: none.\"\n\nThis answer comes from the shelf file saved on 2026-11-01: /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md. It is the only shelf file in that folder, so it is the newest one. The shelf is 8 days old, so the files may have changed since then. A full Model Shelf run would check them again. This was a read-only question, so nothing was moved, tagged or saved."
+ }
+]

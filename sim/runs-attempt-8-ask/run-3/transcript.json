@@ -1,0 +1,32 @@
+[
+ {
+  "role": "user",
+  "kind": "message",
+  "text": "Use Model Shelf. Ask my shelf: which of my models have the apache-2.0 license? My shelf folder is /data/shelf."
+ },
+ {
+  "role": "parent",
+  "kind": "delegate",
+  "text": "delegate --target file-agent --instruction 'Read only. Change nothing. Look in this shelf folder for files whose names begin with model-shelf, and give the full path of the newest one: /data/shelf. If there are no results, say so plainly.'"
+ },
+ {
+  "role": "expert",
+  "kind": "result",
+  "text": "status completed: One file matches \"model-shelf*\" under /data/shelf. It is the newest by the timestamp in its name, which is 20261101T000000Z:\n\n/data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md (size 663 bytes)\n\nCommand run: ug-filesystem find --path /data/shelf --pattern \"model-shelf*\" --type file. Output: {\"ok\": true, \"data\": {\"items\": [{\"path\": \"/data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md\", \"type\": \"file\", \"size\": 663}], \"truncated\": false}}\n\nThe find result does not include modification times, so \"newest\" rests on the timestamp in the file name. No writes were made."
+ },
+ {
+  "role": "parent",
+  "kind": "delegate",
+  "text": "delegate --target document-agent --instruction 'Read only. Answer a question using only the shelf file at /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md. The question is: which of my models have the apache-2.0 license? Quote each line of the file that you use, word for word. If the file does not answer the question, say so plainly.'"
+ },
+ {
+  "role": "expert",
+  "kind": "result",
+  "text": "status completed: Question: which models have the apache-2.0 license? Answer: one model, Tiny Lantern 1B Instruct, at /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf.\n\nQuoted from /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md (the tool returned the shelf as one text string, so these are the exact segments used):\n- \"File: /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf. Model: Tiny Lantern 1B Instruct. Named by: header. Size: 4268 bytes. License line: apache-2.0 (header). Twin: none.\"\n\nOther entries in the shelf do not have apache-2.0:\n- \"File: /data/models/harbor-vision/harbor-vision-2b.gguf. Model: Harbor Vision 2B. Named by: header. Size: 4273 bytes. License line: harbor-noncommercial-1.0 (header). Twin: none.\"\n- \"File: /data/models/image/pier-sketch/model.safetensors. Model: Pier Sketch XL. Named by: model card. Size: 112 bytes. License line: license: openrail++ (/data/models/image/pier-sketch/README.md). Twin: none.\"\n\nThe shelf is dated 2026-11-01 and was read as-is. No read errors. No writes were made."
+ },
+ {
+  "role": "parent",
+  "kind": "final",
+  "text": "One model on your shelf has the apache-2.0 license: Tiny Lantern 1B Instruct, at /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf.\n\nSource: the shelf file /data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md, dated 2026-11-01. The line used, word for word:\n\"File: /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf. Model: Tiny Lantern 1B Instruct. Named by: header. Size: 4268 bytes. License line: apache-2.0 (header). Twin: none.\"\n\nThe other two entries in that shelf file do not have apache-2.0. Harbor Vision 2B has harbor-noncommercial-1.0, and Pier Sketch XL has openrail++.\n\nThe files can have changed since 2026-11-01. A full Model Shelf run would check them again. This answer wrote nothing."
+ }
+]

@@ -21,6 +21,7 @@ WEIGHT_EXTENSIONS = (".gguf", ".safetensors", ".ckpt", ".pt", ".pth", ".bin", ".
 QA_EXTENSIONS = (".md", ".txt")
 DELETE_ACTION_NAMES = {"del", "rm", "rmdir", "remove", "unlink", "delete", "batch-del"}
 DELETE_CALLS = {("file-workflow", "run")}
+TAGS_FILE = "tags.json"
 GLOBAL_FLAGS = ("--sandbox", "--log", "--state")
 PATH_PARAMS = ("path", "src", "dst")
 READ = "read"
@@ -57,8 +58,10 @@ def is_under(virtual: str, folder: str) -> bool:
 
 
 class Context:
-    def __init__(self, sandbox: pathlib.Path):
+    def __init__(self, sandbox: pathlib.Path, state=None):
         self.sandbox = pathlib.Path(os.path.realpath(sandbox))
+        folder = pathlib.Path(state).parent if state else self.sandbox.parent
+        self.tags_path = folder / TAGS_FILE
 
     def resolve(self, virtual: str) -> pathlib.Path:
         """Map a virtual /data path to a real path inside the sandbox."""
@@ -326,6 +329,41 @@ def do_save_text(ctx, params):
     return {"verified": True, "outputFile": ctx.virtual(target), "contentBytes": len(data)}
 
 
+def load_tags(ctx) -> dict:
+    if not ctx.tags_path.exists():
+        return {}
+    try:
+        data = json.loads(ctx.tags_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def do_tag_add_file(ctx, params):
+    tag = opt(params, "tag-id")
+    if not tag:
+        raise NasError("BAD_ARGS", "missing --tag-id")
+    reals = []
+    for virtual in as_list(params, "path"):
+        real = ctx.resolve(virtual)
+        if not real.is_file():
+            raise NasError("NOT_FOUND", f"no such file: {virtual}")
+        reals.append(ctx.virtual(real))
+    tags = load_tags(ctx)
+    for path in reals:
+        names = tags.setdefault(path, [])
+        if tag not in names:
+            names.append(tag)
+    ctx.tags_path.write_text(json.dumps(tags, indent=2), encoding="utf-8")
+    return {"tagged": reals, "tag": tag}
+
+
+def do_tag_get_file(ctx, params):
+    virtual = need(params, "path")
+    real = ctx.resolve(virtual)
+    return {"path": ctx.virtual(real), "tags": list(load_tags(ctx).get(ctx.virtual(real), []))}
+
+
 ACTIONS = {
     ("ug-filesystem", "stat"): (do_stat, READ),
     ("ug-filesystem", "ls"): (do_ls, READ),
@@ -335,6 +373,8 @@ ACTIONS = {
     ("ug-filesystem", "mkdir"): (do_mkdir, STATE_CHANGE),
     ("ug-filesystem", "cpmv"): (do_cpmv, STATE_CHANGE),
     ("ug-filemgr", "scan-dedupe"): (do_scan_dedupe, READ),
+    ("ug-filemgr", "tag-add-file"): (do_tag_add_file, STATE_CHANGE),
+    ("ug-filemgr", "tag-get-file"): (do_tag_get_file, READ),
     ("ug-document", "qa"): (do_qa, READ),
     ("ug-knowledge", "save-text"): (do_save_text, STATE_CHANGE),
 }
@@ -466,7 +506,7 @@ def execute(handler, ctx, params):
 
 def dispatch(opts, cli, action, params):
     """Return (result, effect, violation) for a parsed call."""
-    ctx = Context(pathlib.Path(opts["sandbox"]))
+    ctx = Context(pathlib.Path(opts["sandbox"]), opts.get("state"))
     handler, effect = ACTIONS.get((cli, action), (None, READ))
     if is_delete_call(cli, action):
         effect = STATE_CHANGE

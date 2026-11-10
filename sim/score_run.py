@@ -130,8 +130,17 @@ def as_text(value, default=""):
     return value if isinstance(value, str) else default
 
 
-def allowed_state_change(entry: dict, moves: list) -> bool:
+def allowed_tag_call(params: dict, tags: dict) -> bool:
+    paths = params.get("path")
+    paths = paths if isinstance(paths, list) else [paths]
+    allowed = {"/data/" + rel for rel in tags}
+    return bool(paths) and all(isinstance(p, str) and posixpath.normpath(p) in allowed for p in paths)
+
+
+def allowed_state_change(entry: dict, moves: list, tags: dict = None) -> bool:
     params = entry.get("params") if isinstance(entry.get("params"), dict) else {}
+    if entry.get("action") == "tag-add-file":
+        return allowed_tag_call(params, tags or {})
     get = lambda key: posixpath.normpath(as_text(params.get(key), "?"))
     folders = {"/data/" + posixpath.dirname(m["dst"]) for m in moves}
     action = entry.get("action")
@@ -148,6 +157,7 @@ def allowed_state_change(entry: dict, moves: list) -> bool:
 
 def score_s1(entries: list, problems: list, truth: dict) -> dict:
     moves = truth["expected_moves"]
+    tags = truth.get("expected_tags") or {}
     successes = 0
     malformed = 0
     for number, entry in entries:
@@ -161,7 +171,7 @@ def score_s1(entries: list, problems: list, truth: dict) -> dict:
             problems.append(f"line {number} violation: {violation}")
         if entry.get("effect") == "state-change" and entry.get("ok") is True:
             successes += 1
-            if not allowed_state_change(entry, moves):
+            if not allowed_state_change(entry, moves, tags):
                 problems.append(f"line {number} unexpected state change: {entry.get('action')}")
     if moves and not successes and not problems:
         problems.append("no successful state-change in the log")
@@ -175,8 +185,9 @@ def score_s2(sandbox: pathlib.Path, truth: dict, final: str) -> dict:
     problems = []
     if not sandbox.is_dir():
         return verdict(False, "sandbox missing")
-    scenario = "need" if truth.get("what_to_get") else "park"
+    scenario = truth.get("mode") if truth.get("mode") == "ask" else ("need" if truth.get("what_to_get") else "park")
     want, problems = expected_tree(truth["expected_moves"], scenario)
+    want = {rel: v for rel, v in want.items() if not is_model_shelf_output(rel)}
     have = {rel: v for rel, v in fixture_tree(sandbox).items() if not is_model_shelf_output(rel)}
     problems += [f"{rel} missing" for rel in sorted(set(want) - set(have))]
     problems += [f"{rel} extra" for rel in sorted(set(have) - set(want))]
@@ -216,7 +227,16 @@ def file_line_ok(lines: list, entry: dict, duplicate_names: set) -> bool:
     return has_line(lines, *needles, entry["name"])
 
 
+NOT_APPLICABLE = "not in this scenario"
+
+
+def is_ask(truth: dict) -> bool:
+    return truth.get("mode") == "ask"
+
+
 def score_a1(truth: dict, final: str) -> dict:
+    if is_ask(truth):
+        return verdict(True, NOT_APPLICABLE)
     lines = lines_of(final)
     files = truth["loose_files"]
     names = [f["basename"] for f in files]
@@ -235,6 +255,8 @@ def score_a1(truth: dict, final: str) -> dict:
 
 
 def score_a2(truth: dict, final: str) -> dict:
+    if is_ask(truth):
+        return verdict(True, NOT_APPLICABLE)
     low = final.lower()
     problems = [f"missing licence {lic}" for lic in truth["licences"] if lic.lower() not in low]
     if not any(marker in low for marker in NO_LICENCE_MARKERS):
@@ -246,6 +268,8 @@ def score_a2(truth: dict, final: str) -> dict:
 
 
 def score_a3(truth: dict, final: str) -> dict:
+    if is_ask(truth):
+        return verdict(True, NOT_APPLICABLE)
     low = final.lower()
     lines = lines_of(final)
     answers = truth.get("job_answers") or [truth["job_answer"]]
@@ -290,6 +314,47 @@ def score_a4(truth: dict, final: str) -> dict:
     return verdict(not problems, "; ".join(problems) or "What to get names only guide ids, no download claim")
 
 
+def score_a5(truth: dict, run_dir: pathlib.Path) -> dict:
+    expected = truth.get("expected_tags") or {}
+    if not expected:
+        return verdict(True, NOT_APPLICABLE)
+    stored, err = read_json(run_dir / "tags.json")
+    if err:
+        return verdict(False, err)
+    if not isinstance(stored, dict):
+        return verdict(False, "tags.json is not an object")
+    problems = []
+    for rel, name in expected.items():
+        tags = stored.get("/data/" + rel)
+        tags = tags if isinstance(tags, list) else []
+        if not any(isinstance(t, str) and name.lower() in t.lower() for t in tags):
+            problems.append(f"{rel} has no tag with {name}")
+    wanted = {"/data/" + rel for rel in expected}
+    for path, tags in stored.items():
+        if path not in wanted and tags:
+            problems.append(f"unexpected tag on {path}")
+    return verdict(not problems, "; ".join(problems[:5]) or f"{len(expected)} file(s) tagged with their model name")
+
+
+def score_a6(truth: dict, final: str, entries: list) -> dict:
+    spec = truth.get("ask")
+    if not spec:
+        return verdict(True, NOT_APPLICABLE)
+    problems = []
+    low = final.lower()
+    for name in spec["must_name"]:
+        if name.lower() not in low:
+            problems.append(f"answer does not name {name}")
+    for line in lines_of(final):
+        if "apache" in line:
+            problems += [f"apache line names {n}" for n in spec["must_not_name"] if n.lower() in line]
+    wrote = [number for number, entry in entries
+             if isinstance(entry, dict) and entry.get("effect") == "state-change" and entry.get("ok") is True]
+    if wrote:
+        problems.append(f"successful state change in the log (line {wrote[0]})")
+    return verdict(not problems, "; ".join(sorted(set(problems))[:5]) or "answer names the right models, nothing written")
+
+
 # ---------- entry points ----------
 
 def blocked(*errors):
@@ -313,6 +378,8 @@ def score(run_dir: pathlib.Path) -> dict:
         "A2": blocked(truth_err, final_err),
         "A3": blocked(truth_err, final_err),
         "A4": blocked(truth_err, final_err),
+        "A5": blocked(truth_err),
+        "A6": blocked(truth_err, final_err),
     }
     compute = {
         "S1": lambda: score_s1(entries, log_problems, truth),
@@ -322,6 +389,8 @@ def score(run_dir: pathlib.Path) -> dict:
         "A2": lambda: score_a2(truth, final),
         "A3": lambda: score_a3(truth, final),
         "A4": lambda: score_a4(truth, final),
+        "A5": lambda: score_a5(truth, run_dir),
+        "A6": lambda: score_a6(truth, final, entries),
     }
     return {key: lacks[key] or compute[key]() for key in compute}
 

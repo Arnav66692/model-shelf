@@ -76,7 +76,7 @@ These could not be confirmed from the published capability catalog and will be t
 - The package passes the official static checker from the Uliya skill kit 0.7.3 with status static-pass, zero errors and zero warnings.
 - A local simulation ran the workflow against the test data. A small language model played the assistant and followed this Skill. Stand-in experts could act only through a mock of the NAS file, document and knowledge actions, which refused and logged any write before the user's yes, any delete, any touch inside the tool-managed folder, and any weights read past 4096 bytes.
 - The pass bars were fixed before the first run: no unsafe action, a receipt that matches the real files, valid delegate lines, correct names for at least four of five files, license lines quoted exactly, and the right model for the job.
-- On the final version, two test cases ran three times each, six runs in all. Every run passed every bar, including the bring back and the What to get section.
+- On the final rules, three test cases ran three times each: park, bring back with What to get, and Ask the shelf. Every safety bar passed in all nine runs, and each accuracy bar met its preset level. The tags in the File Manager were checked in each run.
 - A simulation cannot show how the real NAS experts, the on-device models or the confirmation prompts behave. Those are the first things to check on the test day.
 
 ## Where the test data comes from

@@ -6,15 +6,15 @@ Model Shelf names the AI model files on a NAS and finds the models that fit the 
 
 ## 2. Problem
 
-Users run AI models at home with Ollama, ComfyUI or LM Studio. One FLUX.1 dev file is 23.8 GB. Files have names like model.safetensors. Each tool sees only its own folder. Users do not know which file is which model. My disks became full more than one time this fall.
+Users run AI models with Ollama, ComfyUI or LM Studio. One FLUX.1 dev file is 23.8 GB. Names like model.safetensors hide the model. Each tool sees only its own folder. My disks became full more than one time this fall.
 
 ## 3. Solution
 
-You type the job, for example "a coding model and a speech to text model". Model Shelf reads the first 4096 bytes of each file and its model card. It names each file and quotes the card lines that fit. It brings back a parked model that fits. If nothing fits, it tells you what to get from a checked list.
+You type the job, for example "a coding model and a speech to text model". Model Shelf reads each file header and model card, names each file, and quotes the card lines that fit. It brings back a parked model that fits. If nothing fits, it tells you what to get from a checked list. It tags each named file in the File Manager. Later, you ask the saved shelf questions.
 
 ## 4. Flow
 
-You give the folders and the job. Model Shelf shows a table, the job answer and a plan with sizes. You answer yes and confirm each move on the NAS. A receipt compares the expected and actual result.
+You give the folders and the job. Model Shelf shows a table, a space summary, the job answer and a plan. You answer yes and confirm each move on the NAS. A receipt shows expected against actual.
 
 ## 5. Difference
 
@@ -22,15 +22,15 @@ Hugging Face and Ollama tools manage only their own folders and delete to make s
 
 ## 6. NAS features
 
-File expert: lists, reads headers, hashes, moves, reads back (steps 1, 2, 4, 6, 7, 9). Document expert: quotes cards, matches the job (step 3). Knowledge expert: saves the shelf file (step 8).
+File expert: lists, reads headers, hashes, moves, tags files in File Manager (steps 1, 2, 4, 6, 7, 8, 10). Document expert: matches the job, answers shelf questions (step 3, Ask). Knowledge expert: saves the shelf (step 9).
 
 ## 7. Approach
 
-Nine steps send tasks to three experts through ug-filesystem, ug-document and ug-knowledge. Inputs: folders, a job, an optional memory budget. It reads only named folders, a maximum of 4096 bytes per weights file, and never token or .env files. You approve each write in the chat and on the NAS. The NAS local model reads the cards. No outside service.
+Ten steps send tasks to three experts through ug-filesystem, ug-filemgr, ug-document and ug-knowledge. Inputs: folders, a job, an optional memory budget. It reads only named folders, a maximum of 4096 bytes per weights file, and never token or .env files. You approve each write in the chat and on the NAS. The NAS local model reads the cards. No outside service.
 
 ## 8. Status
 
-Done: SKILL.md and six references. The official checker shows no errors. In simulation, a small model followed the Skill on synthetic files. Two test cases ran three times each. All six runs passed every safety and accuracy bar. Not simulated: a second run, a tool-store-only folder. To test on the NAS: binary header reads, linked cache folders, hash time for 20 GB files.
+Done: SKILL.md and six references. The official checker shows no errors. In simulation, a small model followed the Skill on synthetic files. Three test cases ran three times each. All nine runs passed every safety bar. Not simulated: a second run, a tool-store-only folder. To test on the NAS: binary header reads, linked cache folders, hash time for 20 GB files.
 
 ## 9. Validation
 
@@ -38,7 +38,7 @@ Core 1: it names a renamed GGUF copy from its header, proves the twin by digest,
 
 ## 10. Limits
 
-It is for people who run their own models. Safetensors headers often have no name, so they need a card. A parked file uses space until you remove it. The model list can become old. No outside dependencies.
+It is for people who run local models. Safetensors headers often have no name, so they need a card. A parked file uses space until you remove it. The model list can become old. No outside dependencies.
 
 ## Not counted in the 500 words
 

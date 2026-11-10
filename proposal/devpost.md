@@ -78,6 +78,23 @@ You type the job, for example "a small coding model and a speech to text model".
 - If one row does not match, it stops all other moves.
 - It says "bytes parked", not "bytes freed", because a parked file still uses space.
 
+**Show names in the File Manager**
+
+- After your yes, it adds a tag such as "Model Shelf: Tiny Lantern 1B Instruct" to each named file.
+- You then see the real model name in the UGOS File Manager, not only in the chat.
+- It tags only files that it named. It does not tag files in tool stores or parked files.
+
+**Space summary**
+
+- It shows the total size of the loose files, the tool stores and the archive.
+- It shows how much space the proven twins use, so you see what a park can give back.
+
+**Ask the shelf**
+
+- Later, you can ask a short question. For example, you can ask which of your models have the apache-2.0 license.
+- The document expert answers from your newest shelf file and quotes the lines that it used.
+- This mode writes nothing and scans nothing. It tells you the date of the shelf file.
+
 **Remember**
 
 - It saves a dated shelf file in a folder that you choose.
@@ -95,8 +112,8 @@ You type the job, for example "a small coding model and a speech to text model".
 
 A UGREEN Skill is a set of Markdown instructions. The Skill sends tasks to experts on the NAS. Model Shelf uses three experts:
 
-- The file expert lists folders, reads headers, calculates hashes and moves files.
-- The document expert reads the model cards and matches the job.
+- The file expert lists folders, reads headers, calculates hashes, moves files and adds File Manager tags.
+- The document expert reads the model cards, matches the job and answers questions about the shelf.
 - The knowledge expert saves a dated shelf file. The next run uses this file to show what changed.
 
 I used the official Uliya skill kit. Its checker shows no errors and no warnings for Model Shelf.
@@ -115,14 +132,14 @@ The second problem was the small model. In my first tests, it lost the last quot
 
 My first test bench also had a fault. A helper agent did not want to record the scripted yes. Thus, the mock NAS refused each move. I fixed the bench, not the pass bars.
 
-In total I ran six rounds of simulation. Two rounds missed the format bar. The last round passed every bar in six of six runs.
+In total I ran nine rounds of simulation. Some rounds missed a bar, and I fixed the Skill text each time. On the final rules, all nine runs passed every safety bar. The full record is in the repository, with the misses.
 
 ## Accomplishments that I am proud of
 
 - In the field of entries that I checked, no other Skill manages AI model files.
 - The Skill names a model from the bytes in the file, not from the file name.
 - The Skill never deletes a file, and it shows a receipt after each move.
-- The safety bars passed on the final text in each simulated run.
+- On the final rules, every safety bar passed in all nine simulated runs.
 
 ## What I learned
 

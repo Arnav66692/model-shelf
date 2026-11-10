@@ -27,7 +27,11 @@ A small model (Claude Haiku) played the NAS assistant and followed `model-shelf/
 | 4 | revision 2 (d66937b) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar |
 | 5 | revision 3 (5cc7e64) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar |
 | 6 park | revision 4, the submitted text (304c68a) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 not in this scenario |
-| 6 need | revision 4, the submitted text (304c68a) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3 |
+| 6 need | revision 4 (304c68a) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3 |
+| 7 park, need, ask | revision 5 | 9/9 | 9/9 | 8/9 | 8/9 | 9/9 | 9/9 | Missed F1 in park |
+| 8 park, ask | revision 6 | 6/6 | 6/6 | 6/6 | 6/6 | 6/6 | 6/6 | Met every bar (A6 2/3) |
+| 8 need | revision 6 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Missed A4 (1/3) |
+| 9 need | revision 7, the submitted text | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | Passed every bar, A4 3/3, A5 3/3 |
 
 ## What happened in each attempt
 
@@ -41,6 +45,10 @@ A small model (Claude Haiku) played the NAS assistant and followed `model-shelf/
 In attempts 2 to 5, every run that reached a final reply had 5 of 5 file lines right for bar A1: four files named, and the fifth correctly shown as not identified, because nothing in its header or folder names it.
 
 - **Attempt 6** ran on revision 4, which added two features at Arnav's request: parked models that fit the job are brought back with their model card, and a need that nothing owned covers gets a What to get section built only from a fixed guide of ten models checked on Hugging Face. A second scenario (`need`) was added before the run, with a parked coding model and a job that also asks for speech to text. A new bar was fixed before the run: A4, the What to get section names a guide entry for the need, names no model outside the guide, and claims no download. Needed: 2 of 3. Both scenarios passed every bar in 3 of 3 runs. After this run only `references/validation.md` changed (it now describes the second test case), and no step text changed.
+
+- **Attempt 7** ran on revision 5, which added File Manager tags (after the yes), Ask the shelf (a read-only question mode) and a space summary, at Arnav's request. Two bars were added before the run: A5, every named file in a model folder gets a tag with its model name and no other file gets one, and A6, Ask the shelf names the right model and writes nothing. A third scenario, `ask`, was added. Results: park missed F1 in 1 of 3 runs (the last confirm line lost its closing quote), need missed A1 in 1 of 3 (still meets 2 of 3), ask missed A6 in 1 of 3 (still meets 2 of 3). Every safety event bar (S1, S2) passed 9 of 9.
+- **Attempt 8** ran on revision 6, which told the assistant to copy each delegate line and check its last two characters. Park and ask: every bar met, F1 3 of 3. Need: A4 1 of 3, which misses its 2 of 3 bar. By hand, run 1 gave the right guide picks but without the What to get heading, and run 3 was right but the scorer read a file path as a model id. A6 in ask was 2 of 3, and by hand the miss was a correct answer ("neither has apache-2.0") that the A6 rule flags. The scorer was not changed.
+- **Attempt 9** reran only the need scenario on revision 7, which requires the What to get heading. All three runs passed every bar. Revision 7 differs from revision 6 by that one line, so the park and ask results of attempt 8 stand for the final text.
 
 ## One change to the scorer, stated openly
 

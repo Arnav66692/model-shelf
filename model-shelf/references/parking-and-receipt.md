@@ -13,6 +13,10 @@ Shelf (N weights files in the folders you named)
 Parked models (in the archive folder)
 - FULL PATH. NAME, named by header or model card. BYTES. License line: "LINE" from SOURCE.
 
+Space summary
+- Loose files: BYTES. Tool-managed folders: BYTES. Archive folder: BYTES.
+- Proven twins that could be parked: BYTES in N files.
+
 Tool-managed folders (listed, never moved)
 - FOLDER. N files in its blobs folder, TOTAL BYTES.
 
@@ -37,7 +41,10 @@ Plan (nothing has been moved yet)
 - If a tool or a workflow loads this copy from its current path, tell me and the other copy is parked instead.
 Total bytes parked: BYTES.
 
-Answer yes to move exactly these files and to save the shelf file in SHELF FOLDER, or name what to leave out.
+Tags for the File Manager (after the moves)
+- FULL PATH gets the tag Model Shelf: MODEL NAME.
+
+Answer yes to move exactly these files, tag the named files and save the shelf file in SHELF FOLDER, or name what to leave out.
 ```
 
 The shelf table shows every loose weights file from Step 1. Step 1 stops at 50 loose files, so the table never holds more than 50 rows.
@@ -61,7 +68,7 @@ The shelf table shows every loose weights file from Step 1. Step 1 stops at 50 l
 
 The Step 5 reply ends with one question that covers every write of the run: the moves and the saved shelf file. Nothing is written before the user answers yes in the chat.
 
-After the yes, the NAS still asks the user to confirm each write: one for making the archive folder if it is missing, one for each file moved, and one for saving the shelf file. With five files that is at most seven. Suggest Allow once each time. Model Shelf never asks for a standing grant on a folder.
+After the yes, the NAS still asks the user to confirm each write: one for making a folder if it is missing, one for each file moved, one for each tag, and one for saving the shelf file. Suggest Allow once each time. Model Shelf never asks for a standing grant on a folder.
 
 A plain no moves nothing, saves nothing and ends the run. If the user names files to leave out, drop those files and show the shorter plan again.
 

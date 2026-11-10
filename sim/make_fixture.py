@@ -33,7 +33,9 @@ QUILL_EXTRA_BYTES = 3
 QUILL_ARCHIVE_DIR = "archive/quill-coder"
 QUILL_MODELS_DIR = "models/quill-coder"
 QUILL_GGUF = "quill-coder-1b-q4.gguf"
-SCENARIOS = ("park", "need")
+SCENARIOS = ("park", "need", "ask")
+ASK_SHELF_PATH = "shelf/model-shelf-20261101T000000Z_0a1b2c3d.md"
+ASK_QUESTION = "Which of my models have the apache-2.0 license?"
 NEED_JOB = "I want a small coding model and a speech to text model. My memory budget is 4 GB."
 GUIDE_IDS = [
     "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
@@ -143,6 +145,20 @@ def _write_parked_coder(root: pathlib.Path) -> None:
     ]))
 
 
+def _shelf_text(root: pathlib.Path) -> str:
+    size = lambda rel: (root / rel).stat().st_size
+    return (
+        "Model Shelf, 2026-11-01. Folders: /data/models, /data/downloads, /data/toolstore. "
+        f"File: /data/{TINY_PATH}. Model: {TINY_NAME}. Named by: header. Size: {size(TINY_PATH)} bytes. "
+        "License line: apache-2.0 (header). Twin: none. "
+        f"File: /data/{HARBOR_PATH}. Model: {HARBOR_NAME}. Named by: header. Size: {size(HARBOR_PATH)} bytes. "
+        "License line: harbor-noncommercial-1.0 (header). Twin: none. "
+        f"File: /data/{PIER_PATH}. Model: {PIER_NAME}. Named by: model card. Size: {size(PIER_PATH)} bytes. "
+        "License line: license: openrail++ (/data/models/image/pier-sketch/README.md). Twin: none. "
+        "End of shelf."
+    )
+
+
 def build_fixture(root: pathlib.Path, scenario: str = "park") -> dict:
     """Create the library under root and return the truth dict."""
     if scenario not in SCENARIOS:
@@ -160,6 +176,8 @@ def build_fixture(root: pathlib.Path, scenario: str = "park") -> dict:
     ]
     if scenario == "need":
         _write_parked_coder(root)
+    if scenario == "ask":
+        _write(root, ASK_SHELF_PATH, _shelf_text(root).encode("utf-8"))
     truth = {
         "loose_files": loose,
         "duplicate": {
@@ -174,12 +192,23 @@ def build_fixture(root: pathlib.Path, scenario: str = "park") -> dict:
         "job_answers": [{"model": TINY_NAME, "quote": "chat and instruction following"}],
         "licence_checks": [["Harbor Vision", "harbor-noncommercial-1.0"]],
         "what_to_get": None,
+        "mode": "full",
+        "expected_tags": {TINY_PATH: TINY_NAME, HARBOR_PATH: HARBOR_NAME, PIER_PATH: PIER_NAME},
+        "ask": None,
     }
+    if scenario == "ask":
+        truth.update({
+            "mode": "ask", "job": None, "job_answer": None, "job_answers": [], "licence_checks": [],
+            "what_to_get": None, "expected_moves": [], "expected_tags": {},
+            "ask": {"question": ASK_QUESTION, "must_name": [TINY_NAME],
+                    "must_not_name": [HARBOR_NAME, PIER_NAME], "shelf_file": ASK_SHELF_PATH},
+        })
     if scenario == "need":
         truth["expected_moves"] = truth["expected_moves"] + [
             {"src": f"{QUILL_ARCHIVE_DIR}/{QUILL_GGUF}", "dst": f"{QUILL_MODELS_DIR}/{QUILL_GGUF}"},
             {"src": f"{QUILL_ARCHIVE_DIR}/README.md", "dst": f"{QUILL_MODELS_DIR}/README.md"},
         ]
+        truth["expected_tags"] = {**truth["expected_tags"], f"{QUILL_MODELS_DIR}/{QUILL_GGUF}": QUILL_NAME}
         truth["job"] = NEED_JOB
         truth["job_answers"] = [{"model": QUILL_NAME, "quote": "code completion"}]
         truth["job_answer"] = truth["job_answers"][0]
@@ -198,7 +227,7 @@ def main(argv: list) -> int:
         scenario = args.pop(3)
         args.pop(2)
     if len(args) != 2:
-        print("usage: make_fixture.py <sandbox_dir> <truth_json_path> [--scenario park|need]", file=sys.stderr)
+        print("usage: make_fixture.py <sandbox_dir> <truth_json_path> [--scenario park|need|ask]", file=sys.stderr)
         return 2
     try:
         truth = build_fixture(pathlib.Path(args[0]), scenario)

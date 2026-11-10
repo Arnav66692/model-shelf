@@ -111,6 +111,70 @@ class FixtureTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 build_fixture(Path(other), scenario="bogus")
 
+    def test_expected_tags_for_park_and_need(self):
+        park_tags = {
+            "models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf": "Tiny Lantern 1B Instruct",
+            "models/harbor-vision/harbor-vision-2b.gguf": "Harbor Vision 2B",
+            "models/image/pier-sketch/model.safetensors": "Pier Sketch XL",
+        }
+        self.assertEqual(self.truth["expected_tags"], park_tags)
+        self.assertEqual(self.truth["mode"], "full")
+        self.assertIsNone(self.truth["ask"])
+        with tempfile.TemporaryDirectory() as other:
+            truth = build_fixture(Path(other), scenario="need")
+            self.assertEqual(truth["expected_tags"],
+                             {**park_tags, "models/quill-coder/quill-coder-1b-q4.gguf": "Quill Coder 1B"})
+            self.assertEqual(truth["mode"], "full")
+
+    def test_ask_scenario_adds_only_the_shelf_file(self):
+        with tempfile.TemporaryDirectory() as other:
+            root = Path(other)
+            truth = build_fixture(root, scenario="ask")
+            shelf = "shelf/model-shelf-20261101T000000Z_0a1b2c3d.md"
+            have = file_hashes(root)
+            want = file_hashes(self.root)
+            self.assertEqual(set(have) - set(want), {shelf})
+            self.assertEqual({k: v for k, v in have.items() if k != shelf}, want)
+            sizes = {rel: (root / rel).stat().st_size for rel in
+                     ("models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf",
+                      "models/harbor-vision/harbor-vision-2b.gguf",
+                      "models/image/pier-sketch/model.safetensors")}
+            text = (root / shelf).read_text(encoding="utf-8")
+            self.assertEqual(text, (
+                "Model Shelf, 2026-11-01. Folders: /data/models, /data/downloads, /data/toolstore. "
+                "File: /data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf. Model: Tiny Lantern 1B Instruct. "
+                f"Named by: header. Size: {sizes['models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf']} bytes. "
+                "License line: apache-2.0 (header). Twin: none. "
+                "File: /data/models/harbor-vision/harbor-vision-2b.gguf. Model: Harbor Vision 2B. "
+                f"Named by: header. Size: {sizes['models/harbor-vision/harbor-vision-2b.gguf']} bytes. "
+                "License line: harbor-noncommercial-1.0 (header). Twin: none. "
+                "File: /data/models/image/pier-sketch/model.safetensors. Model: Pier Sketch XL. "
+                f"Named by: model card. Size: {sizes['models/image/pier-sketch/model.safetensors']} bytes. "
+                "License line: license: openrail++ (/data/models/image/pier-sketch/README.md). Twin: none. "
+                "End of shelf."))
+            self.assertEqual(truth["mode"], "ask")
+            self.assertIsNone(truth["job"])
+            self.assertEqual(truth["job_answers"], [])
+            self.assertEqual(truth["licence_checks"], [])
+            self.assertIsNone(truth["what_to_get"])
+            self.assertEqual(truth["expected_moves"], [])
+            self.assertEqual(truth["expected_tags"], {})
+            self.assertEqual(truth["ask"], {
+                "question": "Which of my models have the apache-2.0 license?",
+                "must_name": ["Tiny Lantern 1B Instruct"],
+                "must_not_name": ["Harbor Vision 2B", "Pier Sketch XL"],
+                "shelf_file": shelf,
+            })
+
+    def test_cli_accepts_ask_scenario(self):
+        import subprocess, sys
+        root = Path(__file__).resolve().parent.parent
+        with tempfile.TemporaryDirectory() as other:
+            done = subprocess.run([sys.executable, str(root / "sim/make_fixture.py"), f"{other}/s",
+                                   f"{other}/t.json", "--scenario", "ask"], capture_output=True, text=True)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(json.loads(Path(other, "t.json").read_text())["mode"], "ask")
+
 
 if __name__ == "__main__":
     unittest.main()

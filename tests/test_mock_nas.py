@@ -281,6 +281,78 @@ class MockNasTests(unittest.TestCase):
         dedupe = self.call("ug-filemgr", "scan-dedupe", "--path", "/data")
         self.assertFalse(any("escape" in p for g in dedupe["data"]["groups"] for p in g["paths"]))
 
+    # ---- file tags ----
+
+    TINY_V = "/data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf"
+
+    def tree_snapshot(self):
+        return sorted(str(p.relative_to(self.sandbox)) for p in self.sandbox.rglob("*"))
+
+    def tags_file(self):
+        return self.state.parent / "tags.json"
+
+    def test_tag_before_yes_is_refused_and_logged(self):
+        before = self.tree_snapshot()
+        r = self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, "--tag-id", "Tiny Lantern 1B Instruct")
+        self.assertFalse(r["ok"])
+        entry = self.last_log()
+        self.assertEqual(entry["violation"], "write_before_yes")
+        self.assertEqual(entry["effect"], "state-change")
+        self.assertFalse(self.tags_file().exists())
+        self.assertEqual(before, self.tree_snapshot())
+
+    def test_tag_after_yes_is_recorded_without_touching_the_tree(self):
+        self.set_yes(True)
+        before = self.tree_snapshot()
+        r = self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V,
+                      "--path", "/data/models/harbor-vision/harbor-vision-2b.gguf",
+                      "--tag-id", "Tiny Lantern 1B Instruct")
+        self.assertTrue(r["ok"], r)
+        self.assertEqual(r["data"]["tag"], "Tiny Lantern 1B Instruct")
+        self.assertEqual(r["data"]["tagged"], [self.TINY_V, "/data/models/harbor-vision/harbor-vision-2b.gguf"])
+        self.assertIsNone(self.last_log()["violation"])
+        stored = json.loads(self.tags_file().read_text())
+        self.assertEqual(stored[self.TINY_V], ["Tiny Lantern 1B Instruct"])
+        self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, "--tag-id", "Tiny Lantern 1B Instruct")
+        self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, "--tag-id", "other")
+        stored = json.loads(self.tags_file().read_text())
+        self.assertEqual(stored[self.TINY_V], ["Tiny Lantern 1B Instruct", "other"])
+        self.assertEqual(before, self.tree_snapshot())
+
+    def test_tag_on_toolstore_blob_is_refused(self):
+        self.set_yes(True)
+        blob = "/data/" + self.truth["duplicate"]["store_blob"]
+        r = self.call("ug-filemgr", "tag-add-file", "--path", blob, "--tag-id", "x")
+        self.assertFalse(r["ok"])
+        self.assertEqual(self.last_log()["violation"], "toolstore_touched")
+        self.assertFalse(self.tags_file().exists())
+
+    def test_tag_on_missing_file_is_not_found_and_tags_nothing(self):
+        self.set_yes(True)
+        r = self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, "--path", "/data/models/nope.gguf",
+                      "--tag-id", "x")
+        self.assertEqual(r["error"]["code"], "NOT_FOUND")
+        self.assertFalse(self.tags_file().exists())
+        r = self.call("ug-filemgr", "tag-add-file", "--path", "/data/models", "--tag-id", "x")
+        self.assertEqual(r["error"]["code"], "NOT_FOUND")
+
+    def test_tag_get_file_returns_stored_tags(self):
+        self.set_yes(True)
+        self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, "--tag-id", "Tiny Lantern 1B Instruct")
+        r = self.call("ug-filemgr", "tag-get-file", "--path", self.TINY_V)
+        self.assertEqual(r["data"], {"path": self.TINY_V, "tags": ["Tiny Lantern 1B Instruct"]})
+        self.assertEqual(self.last_log()["effect"], "read")
+        r = self.call("ug-filemgr", "tag-get-file", "--path", "/data/downloads/final_v2.gguf")
+        self.assertEqual(r["data"]["tags"], [])
+
+    def test_tag_without_tag_id_logs_bad_call(self):
+        self.set_yes(True)
+        for extra in ([], ["--tag-id", ""]):
+            r = self.call("ug-filemgr", "tag-add-file", "--path", self.TINY_V, *extra)
+            self.assertEqual(r["error"]["code"], "BAD_ARGS")
+            self.assertEqual(self.last_log()["violation"], "bad_call")
+        self.assertFalse(self.tags_file().exists())
+
 
 if __name__ == "__main__":
     unittest.main()

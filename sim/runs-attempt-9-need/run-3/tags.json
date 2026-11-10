@@ -1,0 +1,14 @@
+{
+  "/data/models/harbor-vision/harbor-vision-2b.gguf": [
+    "Model Shelf: Harbor Vision 2B"
+  ],
+  "/data/models/image/pier-sketch/model.safetensors": [
+    "Model Shelf: Pier Sketch XL"
+  ],
+  "/data/models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf": [
+    "Model Shelf: Tiny Lantern 1B Instruct"
+  ],
+  "/data/models/quill-coder/quill-coder-1b-q4.gguf": [
+    "Model Shelf: Quill Coder 1B"
+  ]
+}

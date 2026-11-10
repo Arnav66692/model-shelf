@@ -1,6 +1,6 @@
 ---
 name: model-shelf
-description: Names every AI model file on this NAS from its own header or model card, matches the models already owned to the job the user describes with quoted model card lines, brings back parked models the job needs, says what to get from a short checked guide when nothing owned fits, proves exact duplicates by SHA-256, and parks spare copies in an archive folder only after the user approves the exact list. Nothing is deleted. Use when the user asks which AI model files they have, what a weights file really is, which of their models fits a job, which copies are duplicates, or wants to park or bring back model files.
+description: Names every AI model file on this NAS from its own header or model card, matches the models already owned to the job the user describes with quoted model card lines, brings back parked models the job needs, says what to get from a short checked guide when nothing owned fits, proves exact duplicates by SHA-256, parks spare copies in an archive folder and tags named files in the File Manager only after the user approves the exact list, and answers questions from the saved shelf file. Nothing is deleted. Use when the user asks which AI model files they have, what a weights file really is, which of their models fits a job, which copies are duplicates, or wants to park or bring back model files.
 ---
 
 # Goal
@@ -9,7 +9,8 @@ People who run AI models at home keep files of 7 to 43 GB on the NAS under names
 
 1. Name what is there. A shelf table names every weights file, even one called model.safetensors or final_v2.gguf, with its size, its license line as written, and any exact twin.
 2. Match it to the job. The user types the job they want to do. Model Shelf says which models they already own fit it, with the model card lines that say so. If a parked model fits, it plans to bring it back. If nothing they own fits, it says what to get, using only a short guide of models that was checked by hand.
-3. Set up the shelf. Spare copies are parked in an archive folder the user chooses, and parked models the job needs are brought back, only after the user approves the exact list. A receipt then compares what was expected with what is really there.
+3. Set up the shelf. Spare copies are parked in an archive folder the user chooses, parked models the job needs are brought back, and each named file gets a tag with its model name in the NAS File Manager, only after the user approves the exact list. A receipt then compares what was expected with what is really there.
+4. Ask the shelf. Later, the user can ask a short question, such as which models have a given license. The answer comes from the newest saved shelf file, with quoted lines, and writes nothing.
 
 Model Shelf never deletes a file. It never changes, trains, converts or runs a model. Model Shelf never downloads or installs a model. When a model is missing, it tells the user what to get and the user downloads it. It never moves a file inside a tool-managed store, which is a folder where a model tool keeps a blobs folder beside a manifests or snapshots folder.
 
@@ -23,11 +24,14 @@ Collect these from the user before the first delegation. Ask only for what is mi
 - An archive folder. Needed to park files and to find parked models that can come back. It must not sit inside one of the model folders. If it does, ask for another one.
 - A shelf folder, where the dated shelf file is saved. Optional. Without it, save nothing and say so.
 
+If the user only asks a question about models that an earlier run already checked, follow Ask the shelf below and leave out the workflow. Ask the shelf needs only the shelf folder and the question.
+
 If a required folder is missing, return waiting_user with one short question.
 
 # Generation-time capability evidence
 
 - `ug-filesystem` → `file-agent`
+- `ug-filemgr` → `file-agent`
 - `ug-document` → `document-agent`
 - `ug-knowledge` → `knowledge-agent`
 
@@ -35,10 +39,10 @@ If a required folder is missing, return waiting_user with one short question.
 
 ## Rules for every delegate line
 
-- The instructions below hold ten placeholders, written in capital letters with underscores: MODEL_FOLDERS, ARCHIVE_FOLDER, SHELF_FOLDER, LOOSE_FILE_PATHS, CARD_PATHS, JOB_TEXT, FILES_TO_HASH, APPROVED_MOVES, SHELF_TEXT and SAVED_SHELF_PATH. Replace each one with the real value before sending. These ten are the only placeholders. Other capital-letter words, such as README.md and SHA-256, are ordinary words and stay as they are.
+- The instructions below hold thirteen placeholders, written in capital letters with underscores: MODEL_FOLDERS, ARCHIVE_FOLDER, SHELF_FOLDER, LOOSE_FILE_PATHS, CARD_PATHS, JOB_TEXT, FILES_TO_HASH, APPROVED_MOVES, TAG_LIST, SHELF_TEXT, SAVED_SHELF_PATH, SHELF_FILE_PATH and QUESTION_TEXT. Replace each one with the real value before sending. These thirteen are the only placeholders. Other capital-letter words, such as README.md and SHA-256, are ordinary words and stay as they are.
 - Every real value comes from the user or from the real result of an earlier step. Never invent a path, a name, a size, a digest or a date.
 - An instruction never holds an apostrophe or a quote mark. Restate the job without them. If a real path holds an apostrophe or a quote mark, do not send it. Name that file to the user and return waiting_user so they can rename it or leave it out of this run.
-- Every delegate line ends with a period followed by one straight single quote. Check the end of the line before sending it.
+- Copy each delegate line from this file and change only its placeholders. Every delegate line ends with a period followed by one straight single quote. Check the last two characters of the line before sending it, and add the quote if it is missing.
 - Run the steps in order. A step that depends on a missing result does not run.
 - After each delegation read the status. Only completed counts as a result. The section Completion and failure says what to do with failed, cancelled, waiting_user and waiting_approval.
 
@@ -93,11 +97,13 @@ delegate --target file-agent --instruction 'Read only. Change nothing. Compute t
 No delegation. Build the reply from the real results of Steps 1 to 4, in the layout given in [references/parking-and-receipt.md](references/parking-and-receipt.md).
 
 - Shelf table. One row per weights file with its full path, model name, how it was named (header, model card, or not identified), size, license line as written with its source, and its twin if it has one. Write no license line found when neither the header nor the card states one.
+- Space summary. Total bytes in loose files, in tool-managed folders and in the archive folder, and the bytes held by proven twins that could be parked. Use only sizes from Step 1.
 - Changed since the last shelf. Only when Step 1 returned an earlier shelf file. List files that are new, gone or moved since then.
 - Job answer. Only when the user gave a job. Follow [references/job-match.md](references/job-match.md). Use the needs, the matches and the quoted lines the document expert returned in Step 3. For each need there are three outcomes. A model on the shelf fits it. Or one of the parked models fits it, so plan to bring it back. Or nothing the user owns fits it.
-- What to get. Only for a need that nothing the user owns fits. Read [references/model-guide.md](references/model-guide.md) and follow it. Never name a model that is not in the guide. If no guide entry covers the need, say so and say what to look for.
+- What to get. Only for a need that nothing the user owns fits. Put it in its own section that starts with the heading What to get, after the job answer. Read [references/model-guide.md](references/model-guide.md) and follow it. Never name a model that is not in the guide. If no guide entry covers the need, say so and say what to look for.
 - Plan. List the files to park, five files at most in one run, each with its size, its reason, the copy that is kept, and its destination, and the total bytes parked. The only reasons to park are an exact duplicate proven in Step 4 or a file the user picked. Bring a parked model back when it fits a need that no model on the shelf covers, or when the user names it. Bring it back together with its model card, to the destination given in the plan rules. Moves of both kinds count toward the five.
-- End the reply with one question that covers every write. Ask the user to answer yes to move exactly these files and to save the shelf file in the shelf folder, or to name what to leave out. If the plan is empty and a shelf folder was given, ask for a yes to save the shelf file only. Return waiting_user. Nothing is written before the user answers. If the plan is empty and no shelf folder was given, ask nothing and give the final reply.
+- Tags. List the tag that each named weights file will get, in the form Model Shelf: MODEL NAME. Only files that have a name and that sit in a model folder after the moves get a tag, ten files at most. Parked files, tool-managed files and files that are not identified get no tag.
+- End the reply with one question that covers every write. Ask the user to answer yes to move exactly these files, tag the named files and save the shelf file in the shelf folder, or to name what to leave out. If the plan has no moves, ask for a yes to tag the named files and, when a shelf folder was given, to save the shelf file. Return waiting_user. Nothing is written before the user answers. If there is nothing to move, tag or save, ask nothing and give the final reply.
 - A plain no moves nothing, saves nothing and ends the run.
 
 ## Step 6. Move the approved files
@@ -115,20 +121,42 @@ Only when Step 6 ran.
 delegate --target file-agent --instruction 'Read only. Change nothing. For each of these moves, say whether the source path still exists, whether the destination path exists, and the size in bytes of the file at the destination: APPROVED_MOVES. Report exactly what is there.'
 
 - Print one receipt row per file with the expected state, the found state, and the word match or mismatch.
-- A mismatch stops the moves. Show the partial receipt, send no further moves, and still save the shelf file in Step 8 so that the record of what moved is kept. The run then ends as failed.
+- A mismatch stops the moves. Show the partial receipt, send no further moves, add no tags, and still save the shelf file in Step 9 so that the record of what moved is kept. The run then ends as failed.
 - Report bytes parked. Never report bytes freed, because a parked file still uses space until the user removes it.
 
-## Step 8. Save the shelf file
+## Step 8. Tag the named files
+
+Only after the user says yes, and only when the plan lists tags. Use the final path of each file, after the moves. A tag name holds no apostrophe and no quote mark.
+
+delegate --target file-agent --instruction 'The user approved this exact list. Add each tag to the file shown beside it, one file at a time, and make the tag if it does not exist: TAG_LIST. Tag no other file. Remove no tag, move no file and change no file. Report for each file whether the tag was added.'
+
+- The NAS asks the user to confirm each tag. Suggest Allow once.
+- If a tag fails, say so in the receipt and carry on with the next file. A failed tag changes no file.
+
+## Step 9. Save the shelf file
 
 Only when the user gave a shelf folder and answered yes. Write the shelf text on one line, each record ending with a period, in the form given in [references/parking-and-receipt.md](references/parking-and-receipt.md), with the date of the run first, and with no table bars, no quote marks and no backticks. Its last line is always End of shelf. The placeholder SHELF_TEXT stands for every line of the shelf text except that last line, which is already written in the instruction. The instruction ends with a fixed sentence, so the shelf text sits in the middle of it.
 
 delegate --target knowledge-agent --instruction 'Save a new Markdown file in this folder: SHELF_FOLDER. The text to save starts with the words Model Shelf and stops after the words End of shelf. Here is the text. SHELF_TEXT End of shelf. Save exactly that text and nothing after it. Give the file a name that begins with model-shelf, never replace an existing file, and return the full path of the saved file.'
 
-## Step 9. Confirm the saved file
+## Step 10. Confirm the saved file
 
-Only when Step 8 returned a path.
+Only when Step 9 returned a path.
 
-delegate --target file-agent --instruction 'Read only. Change nothing. A shelf file was saved at SAVED_SHELF_PATH and you must say whether that file exists and give its size in bytes.'
+delegate --target file-agent --instruction 'Read only. Change nothing. Check the file at SAVED_SHELF_PATH and say whether it exists and how many bytes it holds.'
+
+# Ask the shelf
+
+Use this mode when the user only asks a question about models that an earlier run already checked. This mode writes nothing. It sends two read-only instructions.
+
+delegate --target file-agent --instruction 'Read only. Change nothing. Look in this shelf folder for files whose names begin with model-shelf, and give the full path of the newest one: SHELF_FOLDER. If there are no results, say so plainly.'
+
+- If there is no shelf file, say that no shelf was saved yet and offer a full run. Stop.
+- Restate the question without apostrophes or quote marks, and put it in place of QUESTION_TEXT.
+
+delegate --target document-agent --instruction 'Read only. Answer a question using only the shelf file at SHELF_FILE_PATH. The question is: QUESTION_TEXT. Quote each line of the file that you use, word for word. If the file does not answer the question, say so plainly.'
+
+- Give the answer with the quoted lines and the date of the shelf file. Add that the files can have changed since that date, and that a full run checks them again.
 
 # Completion and failure
 

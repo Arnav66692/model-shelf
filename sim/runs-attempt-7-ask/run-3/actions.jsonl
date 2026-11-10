@@ -1,0 +1,2 @@
+{"cli": "ug-filesystem", "action": "find", "params": {"path": "/data/shelf", "pattern": "model-shelf*", "type": "file"}, "effect": "read", "ok": true, "violation": null}
+{"cli": "ug-document", "action": "qa", "params": {"query": "which of my models have the apache-2.0 license", "file": "/data/shelf/model-shelf-20261101T000000Z_0a1b2c3d.md"}, "effect": "read", "ok": true, "violation": null}

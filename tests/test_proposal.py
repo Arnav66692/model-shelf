@@ -56,7 +56,7 @@ class ProposalTests(unittest.TestCase):
     def test_claims_match_the_simulation_record(self):
         text = proposal_text()
         self.assertNotIn("named all five files", text)
-        self.assertIn("All six runs passed", text)
+        self.assertIn("All nine runs passed", text)
         self.assertIn("Not simulated", text)
         self.assertNotIn("SIM_RESULT", text)
         self.assertNotIn("Stability Matrix", text)

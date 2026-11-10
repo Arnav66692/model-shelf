@@ -36,6 +36,7 @@ MAX_DESCRIPTION_CHARS = 1024
 PLACEHOLDERS = [
     "MODEL_FOLDERS", "ARCHIVE_FOLDER", "SHELF_FOLDER", "LOOSE_FILE_PATHS", "CARD_PATHS",
     "JOB_TEXT", "FILES_TO_HASH", "APPROVED_MOVES", "SHELF_TEXT", "SAVED_SHELF_PATH",
+    "TAG_LIST", "QUESTION_TEXT", "SHELF_FILE_PATH",
 ]
 DELEGATE_TARGET = re.compile(r"delegate --target ([a-z-]+) --instruction '")
 
@@ -153,7 +154,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("two hyphens", text)
 
     def test_yes_question_covers_the_shelf_save(self):
-        self.assertRegex(skill_text(), r"answer yes to move exactly these files and to save the shelf file")
+        self.assertRegex(skill_text(), r"answer yes to move exactly these files, tag the named files and save the shelf file")
 
     def test_no_config_json_read_is_promised(self):
         for path, text in all_text().items():
@@ -230,6 +231,33 @@ class PackageTests(unittest.TestCase):
         text = (REFERENCES / "job-match.md").read_text(encoding="utf-8")
         self.assertNotIn("never suggest a download", text)
         self.assertIn("What to get", text)
+
+    def test_file_manager_tags_after_the_yes(self):
+        text = skill_text()
+        self.assertIn("- `ug-filemgr` → `file-agent`", text)
+        self.assertIn("Model Shelf: ", text)
+        tag_line = [l for l in text.splitlines() if "delegate --target" in l and "TAG_LIST" in l]
+        self.assertEqual(len(tag_line), 1)
+        self.assertIn("The user approved", tag_line[0])
+        self.assertLess(text.index("Read back and print the receipt"), text.index("Tag the named files"))
+        self.assertRegex(text, r"answer yes to move exactly these files, tag the named files")
+
+    def test_ask_the_shelf_mode_writes_nothing(self):
+        text = skill_text()
+        self.assertIn("# Ask the shelf", text)
+        ask = text.split("# Ask the shelf", 1)[1].split("\n# ", 1)[0]
+        lines = [l for l in ask.splitlines() if "delegate --target" in l]
+        self.assertTrue(lines)
+        self.assertTrue(all("Read only" in l for l in lines), lines)
+        self.assertIn("QUESTION_TEXT", ask)
+        self.assertIn("SHELF_FILE_PATH", ask)
+        self.assertIn("writes nothing", ask)
+
+    def test_space_summary_is_in_the_reply(self):
+        self.assertIn("Space summary", skill_text())
+        plan = (REFERENCES / "parking-and-receipt.md").read_text(encoding="utf-8")
+        self.assertIn("Space summary", plan)
+        self.assertIn("could be parked", plan)
 
     def test_package_limits(self):
         files = package_files()
