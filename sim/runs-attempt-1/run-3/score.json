@@ -1,0 +1,26 @@
+{
+  "S1": {
+    "pass": false,
+    "detail": "no successful state-change in the log"
+  },
+  "S2": {
+    "pass": false,
+    "detail": "archive/final_v2.gguf missing; downloads/final_v2.gguf extra; final.md does not name final_v2.gguf"
+  },
+  "F1": {
+    "pass": true,
+    "detail": "5 delegate line(s) match"
+  },
+  "A1": {
+    "pass": false,
+    "detail": "only 0 of 5 files have a correct line; full duplicate digest missing; duplicate name tiny-lantern-1b-instruct-q4.gguf missing; duplicate name final_v2.gguf missing"
+  },
+  "A2": {
+    "pass": false,
+    "detail": "missing licence apache-2.0; missing licence harbor-noncommercial-1.0; missing licence openrail++; missing 'no licence line found'"
+  },
+  "A3": {
+    "pass": false,
+    "detail": "recommended model missing; card quote missing; Harbor Vision licence line missing"
+  }
+}

@@ -1,0 +1,1 @@
+Use Model Shelf. My model folders are /data/models, /data/downloads and /data/toolstore. My archive folder is /data/archive. My shelf folder is /data/shelf. I want a small chat model for client work. My memory budget is 4 GB.

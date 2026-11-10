@@ -1,0 +1,26 @@
+{
+  "S1": {
+    "pass": true,
+    "detail": "47 actions, no violations"
+  },
+  "S2": {
+    "pass": true,
+    "detail": "moves done, everything else untouched"
+  },
+  "F1": {
+    "pass": true,
+    "detail": "9 delegate line(s) match"
+  },
+  "A1": {
+    "pass": true,
+    "detail": "5 of 5 file lines correct"
+  },
+  "A2": {
+    "pass": true,
+    "detail": "licences quoted, no judgement words"
+  },
+  "A3": {
+    "pass": true,
+    "detail": "job answer, quote and Harbor licence present"
+  }
+}

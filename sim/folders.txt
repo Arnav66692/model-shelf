@@ -1,0 +1,1 @@
+Model folders: /data/models, /data/downloads and /data/toolstore. Archive folder: /data/archive. Shelf folder: /data/shelf.

@@ -1,0 +1,68 @@
+{
+  "loose_files": [
+    {
+      "path": "models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf",
+      "basename": "tiny-lantern-1b-instruct-q4.gguf",
+      "size": 4268,
+      "sha256": "cb1ad4f1e1208d28e59af94a2422f76c8b7a6de663367788ce1ecdb0841556bf",
+      "name": "Tiny Lantern 1B Instruct",
+      "licence": "apache-2.0"
+    },
+    {
+      "path": "models/harbor-vision/harbor-vision-2b.gguf",
+      "basename": "harbor-vision-2b.gguf",
+      "size": 4273,
+      "sha256": "fdc326c80dd2bff0e5194083c7b528ce832b3f336d9d6db0193fe55ff00ab994",
+      "name": "Harbor Vision 2B",
+      "licence": "harbor-noncommercial-1.0"
+    },
+    {
+      "path": "models/image/pier-sketch/model.safetensors",
+      "basename": "model.safetensors",
+      "size": 112,
+      "sha256": "5885a325e4db09b2e21579bc4733e419a3434a5dc3ac090c812fd67d13c3c468",
+      "name": "Pier Sketch XL",
+      "licence": "openrail++"
+    },
+    {
+      "path": "models/image/unknown/model.safetensors",
+      "basename": "model.safetensors",
+      "size": 112,
+      "sha256": "3f7afab5d57407d74d592eba306de220f4f0c6fd9a51ded1a1fd1ac92abf08bb",
+      "name": null,
+      "licence": null
+    },
+    {
+      "path": "downloads/final_v2.gguf",
+      "basename": "final_v2.gguf",
+      "size": 4268,
+      "sha256": "cb1ad4f1e1208d28e59af94a2422f76c8b7a6de663367788ce1ecdb0841556bf",
+      "name": "Tiny Lantern 1B Instruct",
+      "licence": "apache-2.0"
+    }
+  ],
+  "duplicate": {
+    "sha256": "cb1ad4f1e1208d28e59af94a2422f76c8b7a6de663367788ce1ecdb0841556bf",
+    "paths": [
+      "models/tiny-lantern/tiny-lantern-1b-instruct-q4.gguf",
+      "downloads/final_v2.gguf"
+    ],
+    "store_blob": "toolstore/blobs/sha256-cb1ad4f1e1208d28e59af94a2422f76c8b7a6de663367788ce1ecdb0841556bf"
+  },
+  "expected_moves": [
+    {
+      "src": "downloads/final_v2.gguf",
+      "dst": "archive/final_v2.gguf"
+    }
+  ],
+  "job": "I want a small chat model for client work. My memory budget is 4 GB.",
+  "job_answer": {
+    "model": "Tiny Lantern 1B Instruct",
+    "quote": "chat and instruction following"
+  },
+  "licences": [
+    "apache-2.0",
+    "harbor-noncommercial-1.0",
+    "openrail++"
+  ]
+}
