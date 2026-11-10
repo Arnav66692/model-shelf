@@ -173,7 +173,7 @@ class PackageTests(unittest.TestCase):
     def test_disclosures_name_the_ai_tool_and_its_principal_uses(self):
         text = (REFERENCES / "disclosures.md").read_text(encoding="utf-8")
         self.assertIn("Claude Code (Anthropic)", text)
-        for use in ["narrow the research field", "write and implement the Skill package", "local simulation"]:
+        for use in ["scope refinement", "Skill implementation drafting", "local simulations"]:
             self.assertIn(use, text, use)
 
     def test_final_review_fixes_hold(self):

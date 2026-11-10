@@ -181,4 +181,4 @@ Explore Your Imagination
 
 ## Not counted
 
-AI tools used: Claude Code (Anthropic). I chose the project, defined its scope and made the product and technical decisions. It helped me narrow my research field, and I directed it on how to write and implement the Skill package and these answers. It also built and ran the local simulation from my instructions.
+AI tools used: Claude Code (Anthropic) assisted with scope refinement, Skill implementation drafting, and running local simulations under human direction and design decisions.

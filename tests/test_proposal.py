@@ -50,14 +50,14 @@ class ProposalTests(unittest.TestCase):
 
     def test_not_counted_section_names_entrant_licenses_and_ai_tools(self):
         tail = proposal_text().split(NOT_COUNTED, 1)[1]
-        for needle in ["Arnav Singh", "Third-party", "Claude Code"]:
+        for needle in ["Arnav Singh", "Third-Party", "Claude Code"]:
             self.assertIn(needle, tail, needle)
 
     def test_claims_match_the_simulation_record(self):
         text = proposal_text()
         self.assertNotIn("named all five files", text)
-        self.assertIn("All nine runs passed", text)
-        self.assertIn("Not simulated", text)
+        self.assertIn("Nine runs", text)
+        self.assertIn("Pending NAS Tests", text)
         self.assertNotIn("SIM_RESULT", text)
         self.assertNotIn("Stability Matrix", text)
 

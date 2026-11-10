@@ -67,4 +67,4 @@ The stand-in experts are not the real UGREEN experts. The test files are a few k
 
 ## AI use
 
-Claude Code (Anthropic) was the only AI tool used. I chose the project, defined its scope and made the product and technical decisions. It helped me narrow my research field, and I directed it on how to write and implement the Skill package and the proposal answers. It also built and ran the local simulation from my instructions. The same statement is in `model-shelf/references/disclosures.md`.
+Claude Code (Anthropic) assisted with scope refinement, Skill implementation drafting, and running local simulations under human direction and design decisions. The same statement is in `model-shelf/references/disclosures.md`.

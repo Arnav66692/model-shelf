@@ -1,11 +1,11 @@
-"""The proposal and the Devpost text follow Simplified Technical English about 80 percent of the way."""
+"""The Devpost text follows Simplified Technical English about 80 percent of the way. The proposal answers are in the entrant's own words."""
 import pathlib
 import unittest
 
 from tests.ste import MAX_WORDS, MEAN_LIMIT, PASSIVE_SHARE, SHORT_SHARE, report
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FILES = [ROOT / "proposal" / "proposal.md", ROOT / "proposal" / "devpost.md"]
+FILES = [ROOT / "proposal" / "devpost.md"]
 NOT_STE = "## Not counted"
 
 

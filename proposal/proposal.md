@@ -2,54 +2,71 @@
 
 ## 1. Summary
 
-You type a job. Model Shelf finds the AI model for it on your NAS, or tells you which model to get.
+You type a job in plain text. Model Shelf identifies the matching AI model on your NAS or recommends a model to download.
 
 ## 2. Problem
 
-New owners do not know which AI model to get. Other owners have files with names like model.safetensors. One FLUX.1 dev file is 23.8 GB. My disks became full this fall.
+New NAS owners do not know which AI model fits their task. Existing models have vague filenames, such as `model.safetensors`. Large files, like a single 23.8 GB FLUX.1-dev weight file, fill storage drives.
 
 ## 3. Solution
 
-You type a job in plain words, for example "turn my voice memos into text". With no models, Model Shelf tells you what to get from a checked list. If you have models, it reads each file header and model card. It names each file and says in plain words what each model does. It brings back a parked model that fits. It tags each named file in the File Manager. Later, you ask the saved shelf questions.
+Type a task in natural language, such as "turn my voice memos into text."
 
-## 4. Flow
+- No existing models: Model Shelf recommends models from a verified list.
+- Existing models: Model Shelf reads file headers and model cards, names the files, and explains what each model does.
+- Retrieval: It retrieves parked models that match your task and tags the files in File Manager.
+- Q&A: Query the saved shelf file at any time.
 
-You give the folders and the job. Model Shelf shows a table, a space summary, the job answer and a plan. You answer yes and confirm each move on the NAS. A receipt shows expected against actual.
+## 4. Workflow
 
-## 5. Difference
+Provide your folders and job description. Model Shelf generates a results table, a storage summary, the matching answer, and an action plan. You review and approve each move on the NAS. Model Shelf then issues a receipt comparing expected and actual actions.
 
-Hugging Face and Ollama tools manage only their own folders and delete to make space. The UGREEN dedupe Skill finds identical files, but cannot tell what a model is. Model Shelf reads the name from the file header. It never deletes. I made this rule after an unapproved delete removed my data.
+## 5. Differences
 
-## 6. NAS features
+Unlike Hugging Face and Ollama tools, which only manage their own directories and delete files to free space, Model Shelf manages your custom folders and never deletes files. Built-in deduplication tools find duplicate files by hash but cannot identify model types. Model Shelf inspects file headers to identify models.
 
-The file expert lists, reads headers, hashes, moves and tags files (steps 1, 2, 4, 6, 7, 8, 10). The document expert matches the job and answers shelf questions (step 3, Ask). The knowledge expert saves the shelf (step 9).
+## 6. Architecture
 
-## 7. Approach
+Model Shelf uses three expert agents on the NAS:
 
-Ten steps send tasks to three experts through ug-filesystem, ug-filemgr, ug-document and ug-knowledge. Inputs: folders, a job, an optional memory budget. It reads only named folders, a maximum of 4096 bytes per weights file, and never token or .env files. You approve each write in the chat and on the NAS. The NAS local model reads the cards.
+- File Expert: Lists files, reads headers, calculates hashes, moves data, and sets tags (Steps 1, 2, 4, 6, 7, 8, 10).
+- Document Expert: Matches models to job descriptions and answers shelf queries (Step 3 & Q&A).
+- Knowledge Expert: Stores the shelf file (Step 9).
+
+## 7. Implementation & Security
+
+A 10-step process routes tasks through `ug-filesystem`, `ug-filemgr`, `ug-document`, and `ug-knowledge`.
+
+- Inputs: Folders, job description, and optional memory budget.
+- Security: Reads only specified folders, inspects a maximum of 4096 bytes per weights file, and ignores `.env` or token files.
+- Control: Local NAS models read the model cards, and every write requires user confirmation in chat and on the NAS.
 
 ## 8. Status
 
-Done: SKILL.md and six references. The official checker shows no errors. In simulation, a small model followed the Skill on synthetic files. Three cases ran three times each. All nine runs passed every safety bar. Not simulated: a second run, a tool-store-only folder. To test on the NAS: binary header reads, linked cache folders, hash time for 20 GB files.
+- Completed: `SKILL.md` and six reference documents pass the official checker with zero errors.
+- Simulated: A small model ran the Skill across synthetic files. Nine runs (three cases repeated three times) passed all safety thresholds.
+- Pending NAS Tests: Binary header reading, linked cache directories, and hash calculation times for 20 GB+ files.
 
 ## 9. Validation
 
-Core 1: it names a renamed GGUF copy from its header, proves the twin by digest, and parks it. Core 2: the job needs coding and speech models. It brings back the parked coding model and tells what to get for speech. Edge 1: with no models, it tells what to get and writes nothing. Edge 2: it lists a tool-managed folder and does not move it.
+- Core 1: Named a renamed GGUF copy using header data, verified the twin via digest, and moved it to parked storage.
+- Core 2: Processed a request needing coding and speech models, retrieved the parked coding model and recommended a speech model to download.
+- Edge 1: Handled an empty directory by recommending models without writing data.
+- Edge 2: Scanned a tool-managed directory without moving files.
 
-## 10. Limits
+## 10. Limitations
 
-Safetensors headers often have no name, so they need a card. A parked file uses space until you remove it. The model list is short and can become old. No outside dependencies.
+- Safetensors headers often lack names and require model cards.
+- Parked files occupy storage until you remove them.
+- The model recommendation list is static and requires periodic updates.
+- Operates locally with zero external dependencies.
 
-## Not counted in the 500 words
+## Not counted in the 500 words: Submission Metadata
 
-Hackathon: UGREEN Hackathon 2026 on AI NAS, Round 1 project proposal. Track: Explore Your Imagination (Open Innovation).
-
-Entrant: Arnav Singh, individual entrant, United States.
-
-Third-party components and licenses: none are shipped. The package is Markdown only. It describes two public file formats, GGUF (ggml project, MIT License) and safetensors (Hugging Face, Apache License 2.0). Its model guide names ten public models with the license field from each model page, read on November 9, 2026. The official Uliya skill kit 0.7.3 was used as a development tool.
-
-External services and data flows: none. The Skill uses only the UGREEN expert agents on the NAS.
-
-AI tools used: Claude Code (Anthropic). I chose the project, defined its scope and made the product and technical decisions. It helped me narrow my research field, and I directed it on how to write and implement the Skill package and these answers. It also built and ran the local simulation from my instructions.
-
-Sources for the numbers: file sizes from the model pages on huggingface.co for black-forest-labs/FLUX.1-dev and bartowski/Llama-3.3-70B-Instruct-GGUF, read on November 9, 2026.
+- Hackathon: UGREEN Hackathon 2026 on AI NAS, Round 1 Proposal
+- Track: Explore Your Imagination (Open Innovation)
+- Entrant: Arnav Singh (Individual Entrant, United States)
+- Third-Party Components & Licenses: Markdown-only package. References GGUF (ggml project, MIT License) and safetensors (Hugging Face, Apache License 2.0). Model guide references 10 public models with the license listed on each model page (verified Nov 9, 2026). Developed using Uliya skill kit 0.7.3.
+- External Services & Data Flows: None. Runs strictly on local UGREEN NAS expert agents.
+- AI Tools Used: Claude Code (Anthropic) assisted with scope refinement, Skill implementation drafting, and running local simulations under human direction and design decisions.
+- Data Sources: File sizes referenced from model pages on `huggingface.co` (`black-forest-labs/FLUX.1-dev` and `bartowski/Llama-3.3-70B-Instruct-GGUF`, accessed Nov 9, 2026).
