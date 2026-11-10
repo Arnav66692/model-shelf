@@ -15,14 +15,7 @@ The whole Skill was developed for this hackathon, starting on November 9, 2026. 
 
 ## AI tools used and their principal uses
 
-Claude Code (Anthropic) was the only AI tool used. It was used:
-
-- to read the hackathon rules and the capability catalog
-- to survey other public entries so this Skill would not repeat them
-- to propose and compare candidate ideas, including the first version of this one, which the entrant chose, and to suggest the working name
-- to draft the design notes, the Skill text and a first draft of the proposal answers, and to check the Skill text against the official static checker
-- to read the facts in model-guide.md from the public model pages
-- to build the local test data and stand-in experts, and to run and score the local simulation
+Claude Code (Anthropic) was the only AI tool used. The entrant chose the project, defined its scope and made the product and technical decisions. It helped the entrant to narrow the research field, and the entrant directed it on how to write and implement the Skill package and the proposal answers. It also built and ran the local simulation from the entrant's instructions.
 
 The entrant set the direction, chose this idea over the others, asked for the job match (type what you want and the shelf adjusts to it), asked that it bring back parked models and say what to get when nothing fits, and supplied the rule the Skill is built on: archive, never delete, show the exact list with sizes and wait for a yes.
 

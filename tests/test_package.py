@@ -170,10 +170,11 @@ class PackageTests(unittest.TestCase):
         for needle in ["same name", "one set", "A plain no", "user names"]:
             self.assertIn(needle, text, needle)
 
-    def test_disclosures_state_ai_help_with_the_idea(self):
+    def test_disclosures_name_the_ai_tool_and_its_principal_uses(self):
         text = (REFERENCES / "disclosures.md").read_text(encoding="utf-8")
-        self.assertIn("candidate ideas", text)
-        self.assertIn("working name", text)
+        self.assertIn("Claude Code (Anthropic)", text)
+        for use in ["narrow the research field", "write and implement the Skill package", "local simulation"]:
+            self.assertIn(use, text, use)
 
     def test_final_review_fixes_hold(self):
         text = skill_text()

@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  :root { --ink:#17191c; --mute:#5d646c; --line:#d9d5cc; --paper:#f6f3ec; --card:#fffdf8; --accent:#1f6f5c; --warn:#8a5a12; }
+  * { box-sizing:border-box; margin:0; }
+  body { width:1500px; height:1000px; background:var(--paper); color:var(--ink); font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; padding:44px 52px 0; overflow:hidden; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid var(--ink); padding-bottom:14px; }
+  h1 { font-size:44px; letter-spacing:-0.02em; font-weight:700; }
+  .tag { font-size:19px; color:var(--mute); }
+  .ask { margin-top:22px; font-size:25px; line-height:1.3; }
+  .ask b { font-weight:600; }
+  .ask span { background:#e6efe9; border-radius:6px; padding:2px 10px; }
+  .grid { display:grid; grid-template-columns: 1.9fr 1fr; gap:26px; margin-top:24px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px 22px; }
+  h2 { font-size:15px; text-transform:uppercase; letter-spacing:0.09em; color:var(--mute); font-weight:600; margin-bottom:12px; }
+  table { border-collapse:collapse; width:100%; font-size:17.5px; }
+  th { text-align:left; font-weight:600; color:var(--mute); font-size:14px; padding:0 10px 8px 0; border-bottom:1px solid var(--line); }
+  td { padding:15px 12px 15px 0; border-bottom:1px solid #ebe7de; vertical-align:top; line-height:1.28; }
+  tr:last-child td { border-bottom:none; }
+  .file { font-family:ui-monospace,Menlo,monospace; font-size:14px; color:var(--mute); white-space:nowrap; }
+  .twin { color:var(--accent); font-weight:600; white-space:nowrap; }
+  .name { font-weight:600; }
+  .does { color:var(--accent); font-weight:600; }
+  .none { color:var(--warn); }
+  .need { font-size:19px; line-height:1.4; margin-bottom:18px; }
+  .need b { font-weight:650; }
+  .need .q { color:var(--mute); font-size:16px; display:block; margin-top:3px; }
+  .get { border-top:1px solid var(--line); padding-top:16px; margin-top:6px; font-size:17.5px; line-height:1.42; }
+  .get code { font-family:ui-monospace,Menlo,monospace; font-size:15.5px; font-weight:600; }
+  .row3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:26px; margin-top:26px; }
+  .small { font-size:19px; line-height:1.42; padding:24px 24px 26px; }
+  .small b { font-weight:650; }
+  .foot { position:absolute; left:52px; right:52px; bottom:22px; font-size:14.5px; color:var(--mute); display:flex; justify-content:space-between; }
+</style></head><body>
+  <div class="top"><h1>Model Shelf</h1><div class="tag">A Skill for the UGREEN AI NAS. It never deletes a file.</div></div>
+  <div class="ask"><b>You type:</b> <span>I want a small coding model and a speech to text model. My memory budget is 4 GB.</span></div>
+
+  <div class="grid">
+    <div class="box">
+      <h2>The shelf: what each file really is</h2>
+      <table>
+        <tr><th>File</th><th>Model</th><th>What it does</th><th>Named by</th><th>License line</th><th>Twin</th></tr>
+        <tr><td class="file">final_v2.gguf</td><td class="name">Tiny Lantern 1B Instruct</td><td class="none">not stated (no card)</td><td>header</td><td>apache-2.0</td><td class="twin">exact twin</td></tr>
+        <tr><td class="file">tiny-lantern-1b-instruct-q4.gguf</td><td class="name">Tiny Lantern 1B Instruct</td><td class="does">chats and writes</td><td>header, model card</td><td>apache-2.0</td><td class="twin">exact twin</td></tr>
+        <tr><td class="file">harbor-vision-2b.gguf</td><td class="name">Harbor Vision 2B</td><td class="does">describes images</td><td>header, model card</td><td>harbor-noncommercial-1.0</td><td>none</td></tr>
+        <tr><td class="file">pier-sketch/model.safetensors</td><td class="name">Pier Sketch XL</td><td class="does">makes images</td><td>model card</td><td>openrail++</td><td>none</td></tr>
+        <tr><td class="file">unknown/model.safetensors</td><td class="none">not identified</td><td class="none">not stated</td><td class="none">not identified</td><td class="none">no license line found</td><td>none</td></tr>
+      </table>
+    </div>
+    <div class="box">
+      <h2>For your job</h2>
+      <div class="need"><b>Need 1. A small coding model.</b> Parked, brought back: Quill Coder 1B.
+        <span class="q">Card line: "Intended use: code completion and code chat."</span></div>
+      <div class="need"><b>Need 2. A speech to text model.</b> Nothing you own covers this need.</div>
+      <div class="get"><h2>What to get</h2>
+        <code>openai/whisper-large-v3-turbo</code><br>License as listed: mit. Size: 1.62 GB, under your 4 GB budget. Open download.<br><br>
+        <code>ggerganov/whisper.cpp</code><br>License as listed: mit. Size: 0.87 GB. Open download.</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="box small"><h2>One yes, then a receipt</h2><b>final_v2.gguf</b> parked in the archive. <b>Quill Coder 1B</b> brought back with its card. Each row read again after the move: 3 of 3 match.</div>
+    <div class="box small"><h2>Proof, not a guess</h2>The two Tiny Lantern files are exact twins. Both SHA-256 digests start <b>cb1ad4f1e120</b> and end <b>0841556bf</b>.</div>
+    <div class="box small"><h2>Names in the File Manager</h2>Four files get a tag such as <b>Model Shelf: Tiny Lantern 1B Instruct</b>. The file with no name gets no tag.</div>
+  </div>
+
+  <div class="foot"><span>Text from a simulated run on synthetic test files (attempt 10, need case, run 2). Columns and wording shortened to fit.</span><span>github.com/Arnav66692/model-shelf</span></div>
+</body></html>

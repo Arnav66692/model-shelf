@@ -4,6 +4,8 @@ Model Shelf is a Skill for the UGREEN AI NAS. You type a job in plain words, for
 
 This is an entry for the UGREEN Hackathon 2026 on AI NAS.
 
+![Model Shelf reply from a simulated run](proposal/images/model-shelf-card.png)
+
 ## What is in this repository
 
 | Folder | What it holds |
@@ -65,4 +67,4 @@ The stand-in experts are not the real UGREEN experts. The test files are a few k
 
 ## AI use
 
-Claude Code (Anthropic) helped to research the field, to draft the Skill text and the answers, to build the test bench and to run the simulation. The full list is in `model-shelf/references/disclosures.md`.
+Claude Code (Anthropic) was the only AI tool used. I chose the project, defined its scope and made the product and technical decisions. It helped me narrow my research field, and I directed it on how to write and implement the Skill package and the proposal answers. It also built and ran the local simulation from my instructions. The same statement is in `model-shelf/references/disclosures.md`.

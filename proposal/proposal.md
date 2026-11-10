@@ -10,7 +10,7 @@ New owners do not know which AI model to get. Other owners have files with names
 
 ## 3. Solution
 
-You type a job in plain words, for example "turn my voice memos into text". If you have no models, Model Shelf tells you what to get from a checked list. If you have models, it reads each file header and model card, names each file, and says in plain words what each model does. It brings back a parked model that fits. It tags each named file in the File Manager. Later, you ask the saved shelf questions.
+You type a job in plain words, for example "turn my voice memos into text". With no models, Model Shelf tells you what to get from a checked list. If you have models, it reads each file header and model card. It names each file and says in plain words what each model does. It brings back a parked model that fits. It tags each named file in the File Manager. Later, you ask the saved shelf questions.
 
 ## 4. Flow
 
@@ -22,7 +22,7 @@ Hugging Face and Ollama tools manage only their own folders and delete to make s
 
 ## 6. NAS features
 
-File expert: lists, reads headers, hashes, moves, tags files in File Manager (steps 1, 2, 4, 6, 7, 8, 10). Document expert: matches the job, answers shelf questions (step 3, Ask). Knowledge expert: saves the shelf (step 9).
+The file expert lists, reads headers, hashes, moves and tags files (steps 1, 2, 4, 6, 7, 8, 10). The document expert matches the job and answers shelf questions (step 3, Ask). The knowledge expert saves the shelf (step 9).
 
 ## 7. Approach
 
@@ -50,6 +50,6 @@ Third-party components and licenses: none are shipped. The package is Markdown o
 
 External services and data flows: none. The Skill uses only the UGREEN expert agents on the NAS.
 
-AI tools used: Claude Code (Anthropic). It was used to read the rules and the capability catalog, to survey other public entries, to propose and compare candidate ideas including the first version of this one, to suggest the working name, to draft the Skill text and these answers, to read the model guide facts, to check the package against the official checker, and to build and run the local simulation.
+AI tools used: Claude Code (Anthropic). I chose the project, defined its scope and made the product and technical decisions. It helped me narrow my research field, and I directed it on how to write and implement the Skill package and these answers. It also built and ran the local simulation from my instructions.
 
 Sources for the numbers: file sizes from the model pages on huggingface.co for black-forest-labs/FLUX.1-dev and bartowski/Llama-3.3-70B-Instruct-GGUF, read on November 9, 2026.
